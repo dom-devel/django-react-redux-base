@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "==1.11"
+django-rest-framework = "*"
+django-rest-knox = "*"
+"psycopg2-binary" = "*"
+background = {editable = true, git = "https://github.com/Seedstars/django-rest-logger/"}
+django-disposable-email-checker = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"

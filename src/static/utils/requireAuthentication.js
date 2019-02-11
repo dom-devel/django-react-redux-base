@@ -1,7 +1,7 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-import PropTypes from 'prop-types';
+import React from "react";
+import { connect } from "react-redux";
+import { push } from "connected-react-router";
+import PropTypes from "prop-types";
 
 export default function requireAuthentication(Component) {
     class AuthenticatedComponent extends React.Component {
@@ -31,16 +31,15 @@ export default function requireAuthentication(Component) {
         render() {
             return (
                 <div>
-                    {this.props.isAuthenticated === true
-                        ? <Component {...this.props} />
-                        : null
-                    }
+                    {this.props.isAuthenticated === true ? (
+                        <Component {...this.props} />
+                    ) : null}
                 </div>
             );
         }
     }
 
-    const mapStateToProps = (state) => {
+    const mapStateToProps = state => {
         return {
             isAuthenticated: state.auth.isAuthenticated,
             token: state.auth.token

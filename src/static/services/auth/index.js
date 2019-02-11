@@ -1,13 +1,13 @@
 import fetch from "isomorphic-fetch";
 import { push } from "connected-react-router";
-import { SERVER_URL } from "../utils/config";
-import { checkHttpStatus, parseJSON } from "../utils";
+import { SERVER_URL } from "utils/config";
+import { checkHttpStatus, parseJSON } from "utils";
 import {
     AUTH_LOGIN_USER_REQUEST,
     AUTH_LOGIN_USER_FAILURE,
     AUTH_LOGIN_USER_SUCCESS,
     AUTH_LOGOUT_USER
-} from "../constants";
+} from "constants";
 
 export function authLoginUserSuccess(token, user) {
     /* This function takes a django returned user and a login

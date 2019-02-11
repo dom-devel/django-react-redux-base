@@ -1,12 +1,7 @@
 {
   // need loose mode for IE9 https://phabricator.babeljs.io/T3041
   "presets": [
-    [
-      "es2015",
-      {
-        "loose": true
-      }
-    ],
+    "env",
     "stage-1",
     "react"
   ],

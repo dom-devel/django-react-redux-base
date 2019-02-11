@@ -1,13 +1,13 @@
 import fetch from "isomorphic-fetch";
 import { push } from "connected-react-router";
 
-import { SERVER_URL } from "../utils/config";
-import { checkHttpStatus, parseJSON } from "../utils";
+import { SERVER_URL } from "utils/config";
+import { checkHttpStatus, parseJSON } from "utils";
 import {
     DATA_FETCH_PROTECTED_DATA_REQUEST,
     DATA_RECEIVE_PROTECTED_DATA
-} from "../constants";
-import { authLoginUserFailure } from "./auth";
+} from "constants";
+import { authLoginUserFailure } from "services/auth";
 
 export function dataReceiveProtectedData(data) {
     return {

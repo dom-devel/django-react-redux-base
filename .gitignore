@@ -14,6 +14,9 @@ htmlcov/
 src/static_dist/
 src/static_root/
 
+# Exclude django local settings
+src/djangoreactredux/development_local_settings.py
+
 # Python compiled byte code
 *.pyc
 
@@ -35,9 +38,6 @@ coverage/
 .sass-lint.yml
 .prospector.yml
 .coveragerc
-
-# in case we run shippable tests don't include it
-shippable/
 
 # not include scripts because they come from external module
 scripts/
