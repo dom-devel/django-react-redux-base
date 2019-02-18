@@ -5,6 +5,7 @@ import {
     AUTH_LOGOUT_USER
 } from "constants";
 
+// Auth data structure definition
 const initialState = {
     token: null,
     userName: null,

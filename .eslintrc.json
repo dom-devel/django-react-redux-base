@@ -19,7 +19,8 @@
          }
       ],
       "react/jsx-max-props-per-line": [0],
-      "react/no-multi-comp": [0]
+      "react/no-multi-comp": [0],
+      "no-console": [0]
    },
    // Allow for console debut settings & test.
    "env":{  

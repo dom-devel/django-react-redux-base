@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 
 import * as actionCreators from "services/auth";
 
+// Create a form
 const Form = t.form.Form;
 
 const Login = t.struct({
@@ -39,6 +40,7 @@ class LoginView extends React.Component {
         })
     };
 
+    // ES6 syntax for setting default props on component
     static defaultProps = {
         statusText: "",
         location: null
@@ -50,6 +52,9 @@ class LoginView extends React.Component {
         const redirectRoute = this.props.location
             ? this.extractRedirect(this.props.location.search) || "/"
             : "/";
+
+        // We store the form values and the redirect location post
+        // login in the state
         this.state = {
             formValues: {
                 email: "",
@@ -59,16 +64,21 @@ class LoginView extends React.Component {
         };
     }
 
+    // This catches a user if they're not authenticated
+    // we're going to switch that to an error boundary
     componentWillMount() {
         if (this.props.isAuthenticated) {
             this.props.dispatch(push("/"));
         }
     }
 
+    // Store form values dyanmically in the state
     onFormChange = value => {
         this.setState({ formValues: value });
     };
 
+    // Get the redirect from the URL -- should probably
+    // be in utilities
     extractRedirect = string => {
         const match = string.match(/next=(.*)/);
         return match ? match[1] : "/";
@@ -76,6 +86,8 @@ class LoginView extends React.Component {
 
     login = e => {
         e.preventDefault();
+        // This is tcomb fun that gets the values from
+        // the form
         const value = this.loginForm.getValue();
         if (value) {
             this.props.actions.authLoginUser(
@@ -147,7 +159,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        // this adds this.props.dispatch back in
         dispatch,
+        // This then is a custom action
         actions: bindActionCreators(actionCreators, dispatch)
     };
 };

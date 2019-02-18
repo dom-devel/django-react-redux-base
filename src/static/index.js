@@ -1,7 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Test from "scenes/Test";
-import createHistory from "history/createBrowserHistory";
 
 import history from "utils/history";
 import { authLoginUserSuccess } from "services/auth";
