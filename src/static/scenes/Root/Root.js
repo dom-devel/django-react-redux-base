@@ -4,7 +4,7 @@ import { ConnectedRouter } from "connected-react-router";
 import PropTypes from "prop-types";
 
 import routes from "routes";
-import App from "scenes/App";
+import App from "scenes/App/App";
 
 const Root = ({ store, history }) => {
 	return (

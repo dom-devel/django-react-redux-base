@@ -3,7 +3,7 @@ import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import "./style.scss";
+import "./Home.scss";
 import reactLogo from "./images/react-logo.png";
 import reduxLogo from "./images/redux-logo.png";
 

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import "styles/main.scss";
 
 // Import local components
-import Navbar from "components/Navbar";
+import Navbar from "components/Navbar/Navbar";
 import { ConnAuthBarrier } from "components/AuthBarrier";
 
 class App extends React.Component {

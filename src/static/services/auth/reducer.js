@@ -6,6 +6,7 @@ import {
 } from "constants";
 
 // Auth data structure definition
+
 const initialState = {
     token: null,
     userName: null,
@@ -54,3 +55,6 @@ export default function authReducer(state = initialState, action) {
             return state;
     }
 }
+
+
+

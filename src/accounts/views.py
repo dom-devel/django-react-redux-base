@@ -30,11 +30,11 @@ class UserLoginView(GenericAPIView):
 
     def post(self, request):
         """User login with username and password."""
+        print("LLSLSLLSq")
         token = AuthToken.objects.create(request.user)
-        return Response({
-            'user': self.get_serializer(request.user).data,
-            'token': token
-        })
+        return Response(
+            {"user": self.get_serializer(request.user).data, "token": token}
+        )
 
 
 class UserConfirmEmailView(AtomicMixin, GenericAPIView):
@@ -51,8 +51,10 @@ class UserConfirmEmailView(AtomicMixin, GenericAPIView):
         if user.confirm_email():
             return Response(status=status.HTTP_200_OK)
 
-        log.warning(message='Email confirmation key not found.',
-                    details={'http_status_code': status.HTTP_404_NOT_FOUND})
+        log.warning(
+            message="Email confirmation key not found.",
+            details={"http_status_code": status.HTTP_404_NOT_FOUND},
+        )
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
@@ -64,4 +66,15 @@ class UserEmailConfirmationStatusView(GenericAPIView):
     def get(self, request):
         """Retrieve user current confirmed_email status."""
         user = self.request.user
-        return Response({'status': user.confirmed_email}, status=status.HTTP_200_OK)
+        return Response({"status": user.confirmed_email}, status=status.HTTP_200_OK)
+
+
+class UserLogoutView(GenericAPIView):
+    serializer_class = UserSerializer
+
+    def post(self, request, format=None):
+        # simply delete the token to force a login
+        print(request)
+        print(request.user)
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)

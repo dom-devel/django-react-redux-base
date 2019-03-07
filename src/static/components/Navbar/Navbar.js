@@ -9,18 +9,23 @@ import Nav from "react-bootstrap/Nav";
 // Redux imports
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
+import { bindActionCreators } from "redux";
 
 // Local imports
-import { authLogoutAndRedirect } from "services/auth";
+import { logout } from "services/auth/authActions";
 
 class NavBar extends React.Component {
 	static propTypes = {
 		dispatch: PropTypes.func.isRequired,
-		isAuthenticated: PropTypes.bool.isRequired
+		loggedIn: PropTypes.bool.isRequired,
+		actions: PropTypes.shape({
+			logout: PropTypes.func.isRequired
+		}).isRequired
 	};
 
 	logout = () => {
-		this.props.dispatch(authLogoutAndRedirect());
+		// this.props.dispatch(authLogoutAndRedirect());
+		this.props.actions.logout();
 	};
 
 	goToLocation = (e, route) => {
@@ -49,15 +54,28 @@ class NavBar extends React.Component {
 						>
 							Restricted
 						</Nav.Link>
-						{this.props.isAuthenticated ? (
+						<Nav.Link onClick={this.logout}>Logout</Nav.Link>
+						{this.props.loggedIn ? (
 							<Nav.Link onClick={this.logout}>Logout</Nav.Link>
 						) : (
-							<Nav.Link
-								href="/login"
-								onClick={e => this.goToLocation(e, "/login")}
-							>
-								Login
-							</Nav.Link>
+							<span className="jsx-wrapper-ele">
+								<Nav.Link
+									href="/login"
+									onClick={e =>
+										this.goToLocation(e, "/login")
+									}
+								>
+									Login
+								</Nav.Link>
+								<Nav.Link
+									href="/register"
+									onClick={e =>
+										this.goToLocation(e, "/register")
+									}
+								>
+									Sign-up
+								</Nav.Link>
+							</span>
 						)}
 					</Nav>
 				</Navbar.Collapse>
@@ -68,9 +86,19 @@ class NavBar extends React.Component {
 
 const mapStateToProps = state => {
 	return {
-		isAuthenticated: state.auth.isAuthenticated,
+		loggedIn: state.auth.loggedIn,
 		location: state.router.location
 	};
 };
 
-export default connect(mapStateToProps)(NavBar);
+const mapDispatchToProps = dispatch => {
+	return {
+		dispatch,
+		actions: bindActionCreators({ logout }, dispatch)
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(NavBar);

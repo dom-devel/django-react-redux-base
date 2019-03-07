@@ -15,7 +15,7 @@ const accessDenied = {};
  * */
 
 const EnsureAuthenticatedConnector = ComposedComponent => props => {
-	if (!props.isAuthenticated) {
+	if (!props.loggedIn) {
 		// This fires twice only when you throw an
 		// error. perhaps its to do with the nested
 		// arrow function?
@@ -26,14 +26,14 @@ const EnsureAuthenticatedConnector = ComposedComponent => props => {
 };
 
 EnsureAuthenticatedConnector.propTypes = {
-	isAuthenticated: PropTypes.bool.isRequired
+	loggedIn: PropTypes.bool.isRequired
 };
 
 // We connect our function to the store, because it needs
 // to pull auth from there.
 const mapStateToPropsEnsureAuth = state => {
 	return {
-		isAuthenticated: state.auth.isAuthenticated
+		loggedIn: state.auth.loggedIn
 	};
 };
 
@@ -61,11 +61,16 @@ class AuthBarrier extends Component {
 		if (error === accessDenied) {
 			// Why on earth does adding this line in
 			// make the app work?
-			this.setState({ hasError: true });
+			//
+
+			// This uses redux think so perhaps it doesnt trigger
+			// immediately? perhaps set state could work because
+			// it triggers a re-render?
 			this.props.dispatch(push("/login"));
-			// this.props.history.replace("/login");
+			this.setState({ hasError: true });
 		}
 	}
+
 	render() {
 		// We do nothing clever if a non-authentication
 		// error is thrown, just render the children.

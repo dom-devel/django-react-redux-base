@@ -9,7 +9,10 @@ import createReducer from "store/reducer";
 
 // Local imports
 import authReducer from "services/auth/reducer";
+import authSaga from "services/auth/authSaga";
 import dataReducer from "services/data/reducer";
+
+// console.log(authSaga);
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -37,12 +40,14 @@ export default function configureStore(initialState = {}, history) {
 		composeEnhancers(...enhancers)
 	);
 	// Extensions
-	store.runSaga = sagaMiddleware.run;
+	store.runSaga = sagaMiddleware.run(authSaga);
 	store.injectedReducers = {
-		// auth: authReducer,
+		auth: authReducer
 		// data: dataReducer
 	}; // Reducer registry
-	store.injectedSagas = {}; // Saga registry
+	// store.injectedSagas = {
+	// 	authSaga
+	// }; // Saga registry
 
 	// Make reducers hot reloadable, see http://mxs.is/googmo
 	/* istanbul ignore next */

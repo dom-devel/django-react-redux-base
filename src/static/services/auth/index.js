@@ -1,7 +1,7 @@
 import fetch from "isomorphic-fetch";
 import { push } from "connected-react-router";
 import { SERVER_URL } from "utils/config";
-import { checkHttpStatus, parseJSON } from "utils";
+import { checkHttpStatus, parseJSON } from "utils/utils";
 import {
     AUTH_LOGIN_USER_REQUEST,
     AUTH_LOGIN_USER_FAILURE,

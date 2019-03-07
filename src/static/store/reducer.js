@@ -5,7 +5,7 @@
 import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
 
-import authReducer from "services/auth/reducer";
+import authReducer from "services/auth/authReducer";
 import dataReducer from "services/data/reducer";
 import history from "utils/history";
 

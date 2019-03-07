@@ -2,7 +2,7 @@ import fetch from "isomorphic-fetch";
 import { push } from "connected-react-router";
 
 import { SERVER_URL } from "utils/config";
-import { checkHttpStatus, parseJSON } from "utils";
+import { checkHttpStatus, parseJSON } from "utils/utils";
 import {
     DATA_FETCH_PROTECTED_DATA_REQUEST,
     DATA_RECEIVE_PROTECTED_DATA

@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router";
 import {
 	HomeView,
 	LoginView,
+	RegisterView,
 	RestrictedView,
 	ProtectedView,
 	NotFoundView
@@ -13,6 +14,7 @@ export default (
 	<Switch>
 		<Route exact path="/" component={HomeView} />
 		<Route path="/login" component={LoginView} />
+		<Route path="/register" component={RegisterView} />
 		<Route path="/restricted" component={RestrictedView} />
 		<Route
 			path="/protected"

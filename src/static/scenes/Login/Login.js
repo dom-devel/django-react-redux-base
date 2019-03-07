@@ -1,12 +1,19 @@
+// React imports
 import React from "react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
 import classNames from "classnames";
-import { push } from "connected-react-router";
-import t from "tcomb-form";
 import PropTypes from "prop-types";
 
-import * as actionCreators from "services/auth";
+// Redux imports
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { push } from "connected-react-router";
+
+// Helpers
+import t from "tcomb-form";
+
+// Local imports
+import { loginRequest } from "services/auth/authActions";
+import { extractRedirectOrDefault } from "utils/utils";
 
 // Create a form
 const Form = t.form.Form;
@@ -28,13 +35,16 @@ const LoginFormOptions = {
 
 class LoginView extends React.Component {
     static propTypes = {
+        // From mapState
         dispatch: PropTypes.func.isRequired,
-        isAuthenticated: PropTypes.bool.isRequired,
-        isAuthenticating: PropTypes.bool.isRequired,
+        loggedIn: PropTypes.bool.isRequired,
+        sendingRequest: PropTypes.bool.isRequired,
         statusText: PropTypes.string,
+        // From mapDispatch
         actions: PropTypes.shape({
-            authLoginUser: PropTypes.func.isRequired
+            loginRequest: PropTypes.func.isRequired
         }).isRequired,
+        // From connect
         location: PropTypes.shape({
             search: PropTypes.string.isRequired
         })
@@ -49,9 +59,9 @@ class LoginView extends React.Component {
     constructor(props) {
         super(props);
 
-        const redirectRoute = this.props.location
-            ? this.extractRedirect(this.props.location.search) || "/"
-            : "/";
+        const redirectRoute = extractRedirectOrDefault(
+            this.props.location.search
+        );
 
         // We store the form values and the redirect location post
         // login in the state
@@ -64,39 +74,29 @@ class LoginView extends React.Component {
         };
     }
 
-    // This catches a user if they're not authenticated
-    // we're going to switch that to an error boundary
-    componentWillMount() {
-        if (this.props.isAuthenticated) {
-            this.props.dispatch(push("/"));
-        }
-    }
-
     // Store form values dyanmically in the state
     onFormChange = value => {
         this.setState({ formValues: value });
     };
 
-    // Get the redirect from the URL -- should probably
-    // be in utilities
-    extractRedirect = string => {
-        const match = string.match(/next=(.*)/);
-        return match ? match[1] : "/";
-    };
-
-    login = e => {
+    onFormSubmit = e => {
         e.preventDefault();
         // This is tcomb fun that gets the values from
         // the form
         const value = this.loginForm.getValue();
         if (value) {
-            this.props.actions.authLoginUser(
-                value.email,
-                value.password,
-                this.state.redirectTo
-            );
+            // Pass through as object for easier
+            // unpacking later
+            this.props.actions.loginRequest({
+                email: value.email,
+                password: value.password,
+                redirectTo: this.state.redirectTo
+            });
         }
     };
+
+    // Get the redirect from the URL -- should probably
+    // be in utilities
 
     render() {
         let statusText = null;
@@ -125,8 +125,13 @@ class LoginView extends React.Component {
                 <h1 className="text-center">Login</h1>
                 <div className="login-container margin-top-medium">
                     {statusText}
-                    <form onSubmit={this.login}>
+                    <form onSubmit={this.onFormSubmit}>
                         <Form
+                            // ref, options and type are
+                            // all specific to tcomb forms??
+                            //
+                            // loginForm here is the name
+                            // where we're saving the form
                             ref={ref => {
                                 this.loginForm = ref;
                             }}
@@ -136,7 +141,7 @@ class LoginView extends React.Component {
                             onChange={this.onFormChange}
                         />
                         <button
-                            disabled={this.props.isAuthenticating}
+                            disabled={this.props.loggedIn}
                             type="submit"
                             className="btn btn-default btn-block"
                         >
@@ -151,8 +156,8 @@ class LoginView extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
-        isAuthenticating: state.auth.isAuthenticating,
+        loggedIn: state.auth.loggedIn,
+        sendingRequest: state.auth.sendingRequest,
         statusText: state.auth.statusText
     };
 };
@@ -161,8 +166,10 @@ const mapDispatchToProps = dispatch => {
     return {
         // this adds this.props.dispatch back in
         dispatch,
-        // This then is a custom action
-        actions: bindActionCreators(actionCreators, dispatch)
+        // This then is a custom action. Presumably if you import
+        // an entire module (actionCreators), each function is keyed in an object
+        // Not 100% sure this needs them?
+        actions: bindActionCreators({ loginRequest }, dispatch)
     };
 };
 
