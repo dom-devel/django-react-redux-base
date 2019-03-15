@@ -54,7 +54,12 @@ class NavBar extends React.Component {
 						>
 							Restricted
 						</Nav.Link>
-						<Nav.Link onClick={this.logout}>Logout</Nav.Link>
+						<Nav.Link
+							href="/primary"
+							onClick={e => this.goToLocation(e, "/primary")}
+						>
+							Primary
+						</Nav.Link>
 						{this.props.loggedIn ? (
 							<Nav.Link onClick={this.logout}>Logout</Nav.Link>
 						) : (

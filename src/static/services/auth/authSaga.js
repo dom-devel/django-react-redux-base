@@ -102,7 +102,7 @@ export function* logoutFlow() {
 			yield call(auth.logout);
 			yield put({ type: IS_USER_LOGGED_IN, newAuthState: false });
 		} catch (error) {
-			yield put({ type: REQUEST_ERROR, error: error.message });
+			yield put({ type: REQUEST_ERROR, error: error.non_field_errors });
 		} finally {
 			yield put({ type: SENDING_REQUEST, sending: false });
 		}
@@ -151,7 +151,8 @@ export function* authorize({
 		return response;
 	} catch (error) {
 		// If we get an error we send Redux the appropriate action and return
-		yield put({ type: REQUEST_ERROR, error: error.message });
+		console.log(error);
+		yield put({ type: REQUEST_ERROR, error: error.non_field_errors });
 
 		return false;
 	} finally {

@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "rest_framework",
     "knox",
+    "sslserver",
     # 'django_extensions',
     "accounts",
     "base",
@@ -117,9 +118,11 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_dist")]
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [],
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
+        "knox.auth.TokenAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework.authentication.BasicAuthentication",
     ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
     "DEFAULT_PARSER_CLASSES": [
@@ -133,7 +136,7 @@ REST_FRAMEWORK = {
 REST_KNOX = {
     "SECURE_HASH_ALGORITHM": "cryptography.hazmat.primitives.hashes.SHA512",
     "AUTH_TOKEN_CHARACTER_LENGTH": 64,
-    "USER_SERIALIZER": "knox.serializers.UserSerializer",
+    "USER_SERIALIZER": "accounts.serializers.UserSerializer",
 }
 
 

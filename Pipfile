@@ -12,6 +12,7 @@ background = {editable = true, git = "https://github.com/Seedstars/django-rest-l
 django-disposable-email-checker = "*"
 
 [dev-packages]
+django-sslserver = "*"
 
 [requires]
 python_version = "3.6"
