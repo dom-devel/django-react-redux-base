@@ -11,7 +11,7 @@ import auth from "services/auth/auth";
 const initialState = {
 	userName: "",
 	token: "",
-	statusText: "",
+	statusText: {},
 	sendingRequest: false,
 	loggedIn: auth.loggedIn()
 };
@@ -32,7 +32,7 @@ function reducer(state = initialState, action) {
 				sendingRequest: action.sending
 			};
 		case CLEAR_ERROR:
-			return { ...state, statusText: "" };
+			return { ...state, statusText: {} };
 		default:
 			return state;
 	}

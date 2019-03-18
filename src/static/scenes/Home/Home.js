@@ -3,19 +3,22 @@ import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
+// Components
+import StatusBlock from "components/StatusBlock/StatusBlock";
+
 import "./Home.scss";
 import reactLogo from "./images/react-logo.png";
 import reduxLogo from "./images/redux-logo.png";
 
 class HomeView extends React.Component {
     static propTypes = {
-        statusText: PropTypes.string,
+        statusText: PropTypes.shape({}),
         userName: PropTypes.string,
         dispatch: PropTypes.func.isRequired
     };
 
     static defaultProps = {
-        statusText: "",
+        statusText: {},
         userName: ""
     };
 
@@ -52,11 +55,7 @@ class HomeView extends React.Component {
                     </p>
                 </div>
                 <div className="margin-top-medium">
-                    {this.props.statusText ? (
-                        <div className="alert alert-info">
-                            {this.props.statusText}
-                        </div>
-                    ) : null}
+                    <StatusBlock statusText={this.props.statusText} />
                 </div>
             </div>
         );

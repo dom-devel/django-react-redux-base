@@ -7,7 +7,7 @@ import {
     DATA_FETCH_PROTECTED_DATA_REQUEST,
     DATA_RECEIVE_PROTECTED_DATA
 } from "constants";
-import { authLoginUserFailure } from "services/auth";
+// import { authLoginUserFailure } from "services/auth";
 
 export function dataReceiveProtectedData(data) {
     return {

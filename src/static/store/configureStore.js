@@ -8,9 +8,9 @@ import createSagaMiddleware from "redux-saga";
 import createReducer from "store/reducer";
 
 // Local imports
-import authReducer from "services/auth/reducer";
+// import authReducer from "services/auth/authReducer";
 import authSaga from "services/auth/authSaga";
-import dataReducer from "services/data/reducer";
+// import dataReducer from "services/data/reducer";
 
 // console.log(authSaga);
 
@@ -35,16 +35,22 @@ export default function configureStore(initialState = {}, history) {
 	/* eslint-enable */
 
 	const store = createStore(
+		// Reducers are all inserted in the primary reducer file
 		createReducer(),
 		initialState,
 		composeEnhancers(...enhancers)
 	);
 	// Extensions
 	store.runSaga = sagaMiddleware.run(authSaga);
-	store.injectedReducers = {
-		auth: authReducer
-		// data: dataReducer
-	}; // Reducer registry
+
+	// NBED: Dynamically injecting the reducers and sagas
+	// in order to make them hot reloadable, was failing
+	// miserably. Unsure why.
+
+	// store.injectedReducers = {
+	// 	auth: authReducer
+	// 	data: dataReducer
+	// }; // Reducer registry
 	// store.injectedSagas = {
 	// 	authSaga
 	// }; // Saga registry

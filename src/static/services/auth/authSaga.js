@@ -10,6 +10,7 @@ import { take, call, put, fork, race } from "redux-saga/effects";
 
 // Local imports
 import auth from "services/auth/auth";
+import catchInvalidToken from "utils/saga";
 
 import {
 	SENDING_REQUEST,
@@ -32,7 +33,6 @@ export function* loginFlow() {
 		const request = yield take(LOGIN_REQUEST);
 		const { email, password, redirectTo } = request.data;
 
-		console.log("Dom");
 		// A `LOGOUT` action may happen while the `authorize` effect is going on, which may
 		// lead to a race condition. This is unlikely, but just in case, we call `race` which
 		// returns the "winner", i.e. the one that finished first
@@ -43,7 +43,7 @@ export function* loginFlow() {
 
 		// If `authorize` was the winner...
 		if (winner.auth) {
-			// ...we send Redux appropiate actions
+			// ...we send Redux appropriate actions
 			yield put({ type: IS_USER_LOGGED_IN, newAuthState: true }); // User is logged in (authorized)
 			yield put({
 				type: CHANGE_FORM,
@@ -71,10 +71,12 @@ export function* registerFlow() {
 		const wasSuccessful = yield call(authorize, {
 			email,
 			password,
-			isRegistering: true
+			isRegistering: true,
+			first_name,
+			last_name
 		});
 
-		// If we could register a user, we send the appropiate actions
+		// If we could register a user, we send the appropriate actions
 		if (wasSuccessful) {
 			yield put({ type: IS_USER_LOGGED_IN, newAuthState: true }); // User is logged in (authorized) after being registered
 			yield put({
@@ -101,14 +103,62 @@ export function* logoutFlow() {
 		try {
 			yield call(auth.logout);
 			yield put({ type: IS_USER_LOGGED_IN, newAuthState: false });
+			yield put(push("/"));
 		} catch (error) {
-			yield put({ type: REQUEST_ERROR, error: error.non_field_errors });
+			// This block checks if token has expired when making
+			// a request that needs authentication
+			const tokenInvalid = yield call(isTokenInvalid, error.response);
+			if (tokenInvalid) {
+				yield call(redirectToHomeWithMessage);
+			} else {
+				yield put({
+					type: REQUEST_ERROR,
+					error: error.response.data,
+					sending: false
+				});
+			}
 		} finally {
 			yield put({ type: SENDING_REQUEST, sending: false });
 		}
-
-		yield put(push("/"));
 	}
+}
+
+/**
+ * This is a saga which will catch failed requests with an invalid
+ * token. If an 401 with invalid token message is thrown the user
+ * will be automatically logged out with a message explaining
+ * what happened.
+ *
+ * @param  {[type]} response [description]
+ * @return {[type]}          [description]
+ */
+function* isTokenInvalid(response) {
+	let tokenValid = false;
+	if ("non_field_errors" in response.data) {
+		if (response.data.non_field_errors.includes("Invalid token.")) {
+			yield call(auth.deleteInvalidToken);
+			yield put({ type: IS_USER_LOGGED_IN, newAuthState: false });
+			tokenValid = true;
+		}
+	}
+
+	return tokenValid;
+}
+
+/**
+ * Sets a message for the user that they've been logged out
+ * and redirects to the home page.
+ * @yield {[type]} [description]
+ */
+function* redirectToHomeWithMessage() {
+	yield put(push("/"));
+	yield put({
+		type: REQUEST_ERROR,
+		error: {
+			non_field_errors: ["Your login has expired. Please sign back in."]
+		},
+		sending: false
+	});
 }
 
 /**
@@ -151,8 +201,11 @@ export function* authorize({
 		return response;
 	} catch (error) {
 		// If we get an error we send Redux the appropriate action and return
-		console.log(error);
-		yield put({ type: REQUEST_ERROR, error: error.non_field_errors });
+		yield put({
+			type: REQUEST_ERROR,
+			error: error.response.data,
+			sending: false
+		});
 
 		return false;
 	} finally {

@@ -41,9 +41,9 @@ export function sendingRequest(sending) {
  * @param  {object} data          The data we're sending for log in
  * @param  {string} data.username The username of the user to log in
  * @param  {string} data.password The password of the user to log in
+ * @param  {string} data.redirectTo The location to redirect after submitting the form
  */
 export function loginRequest(data) {
-	console.log(data);
 	return { type: LOGIN_REQUEST, data };
 }
 
@@ -61,6 +61,7 @@ export function logout() {
  * @param  {string} data.password 	The password of the user to register
  * @param  {string} data.first_name The first name of the user to register
  * @param  {string} data.last_name 	The last name of the user to register
+ * @param  {string} data.redirectTo The location to redirect after submitting the form
  */
 export function registerRequest(data) {
 	return { type: REGISTER_REQUEST, data };

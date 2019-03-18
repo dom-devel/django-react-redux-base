@@ -33,7 +33,7 @@ class App extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
+        loggedIn: state.auth.loggedIn,
         location: state.router.location
     };
 };

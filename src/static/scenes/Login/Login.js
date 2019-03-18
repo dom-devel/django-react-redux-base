@@ -1,12 +1,13 @@
 // React imports
 import React from "react";
-import classNames from "classnames";
 import PropTypes from "prop-types";
 
 // Redux imports
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push } from "connected-react-router";
+
+// Components
+import StatusBlock from "components/StatusBlock/StatusBlock";
 
 // Helpers
 import t from "tcomb-form";
@@ -39,12 +40,12 @@ class LoginView extends React.Component {
         dispatch: PropTypes.func.isRequired,
         loggedIn: PropTypes.bool.isRequired,
         sendingRequest: PropTypes.bool.isRequired,
-        statusText: PropTypes.string,
+        statusText: PropTypes.shape({}),
         // From mapDispatch
         actions: PropTypes.shape({
             loginRequest: PropTypes.func.isRequired
         }).isRequired,
-        // From connect
+        // From redux connect
         location: PropTypes.shape({
             search: PropTypes.string.isRequired
         })
@@ -52,7 +53,7 @@ class LoginView extends React.Component {
 
     // ES6 syntax for setting default props on component
     static defaultProps = {
-        statusText: "",
+        statusText: {},
         location: null
     };
 
@@ -75,7 +76,11 @@ class LoginView extends React.Component {
     }
 
     // Store form values dyanmically in the state
-    onFormChange = value => {
+    onFormChange = (value, path) => {
+        // Validation component
+        this.loginForm.getComponent(path).validate();
+
+        // Set the value of the form in state.
         this.setState({ formValues: value });
     };
 
@@ -99,32 +104,17 @@ class LoginView extends React.Component {
     // be in utilities
 
     render() {
-        let statusText = null;
-        if (this.props.statusText) {
-            const statusTextClassNames = classNames({
-                alert: true,
-                "alert-danger":
-                    this.props.statusText.indexOf("Authentication Error") === 0,
-                "alert-success":
-                    this.props.statusText.indexOf("Authentication Error") !== 0
-            });
-
-            statusText = (
-                <div className="row">
-                    <div className="col-sm-12">
-                        <div className={statusTextClassNames}>
-                            {this.props.statusText}
-                        </div>
-                    </div>
-                </div>
-            );
+        // Check if user is logged-in or sending request
+        let disableSubmit = false;
+        if (this.props.loggedIn || this.props.sendingRequest) {
+            disableSubmit = true;
         }
 
         return (
             <div className="container login">
                 <h1 className="text-center">Login</h1>
                 <div className="login-container margin-top-medium">
-                    {statusText}
+                    <StatusBlock statusText={this.props.statusText} />
                     <form onSubmit={this.onFormSubmit}>
                         <Form
                             // ref, options and type are
@@ -141,7 +131,7 @@ class LoginView extends React.Component {
                             onChange={this.onFormChange}
                         />
                         <button
-                            disabled={this.props.loggedIn}
+                            disabled={disableSubmit}
                             type="submit"
                             className="btn btn-default btn-block"
                         >
@@ -162,13 +152,15 @@ const mapStateToProps = state => {
     };
 };
 
+// This allows us to dispatch actions to the store.
 const mapDispatchToProps = dispatch => {
     return {
         // this adds this.props.dispatch back in
         dispatch,
-        // This then is a custom action. Presumably if you import
-        // an entire module (actionCreators), each function is keyed in an object
-        // Not 100% sure this needs them?
+        // This wraps each of the object properties in
+        // a dispatch call. This means we can now call them
+        // directly and they will dispatch an action to the
+        // store where it can be intercepted by saga.
         actions: bindActionCreators({ loginRequest }, dispatch)
     };
 };

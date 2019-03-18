@@ -15,7 +15,6 @@ from accounts.utils import NoLoopBasicAuthentication
 
 # Knox
 from knox.auth import TokenAuthentication
-from knox.models import AuthToken
 from knox.views import LoginView as KnoxLoginView
 
 
@@ -75,14 +74,3 @@ class UserEmailConfirmationStatusView(GenericAPIView):
         """Retrieve user current confirmed_email status."""
         user = self.request.user
         return Response({"status": user.confirmed_email}, status=status.HTTP_200_OK)
-
-
-class UserLogoutView(GenericAPIView):
-    serializer_class = UserSerializer
-
-    def post(self, request, format=None):
-        # simply delete the token to force a login
-        print(request)
-        print(request.user)
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)

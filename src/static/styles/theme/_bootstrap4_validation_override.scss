@@ -1,0 +1,36 @@
+/*
+* We need Bootrap 4 to take error styling from form-groups a
+* and not from the valid selector, because we lack the fine-grained
+* control over it without tearing apart tcomb forms.
+* 
+ */
+
+/* Make invalid overwrite invalid by default. For some reason
+I found it the other way around by default*/
+.was-validated .form-group.is-invalid .form-control {
+    border-color: #dc3545;
+    padding-right: 2.25rem;
+    background-repeat: no-repeat;
+    background-position: center right calc(2.25rem / 4);
+    background-size: calc(2.25rem / 2) calc(2.25rem / 2);
+}
+
+.was-validated .form-group.is-valid .form-control {
+    border-color: #28a745;
+    padding-right: 2.25rem;
+    background-repeat: no-repeat;
+    background-position: center right calc(2.25rem / 4);
+    background-size: calc(2.25rem / 2) calc(2.25rem / 2);
+}
+
+/* Show the validation help message*/
+.was-validated .form-group.is-invalid .invalid-feedback {
+	display: block;
+}
+
+
+.was-validated .form-group .form-control, {
+    border-color: #ced4da;
+    padding: 0.375rem 0.75rem;
+    background-image: none;
+}

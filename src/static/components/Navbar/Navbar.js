@@ -63,7 +63,9 @@ class NavBar extends React.Component {
 						{this.props.loggedIn ? (
 							<Nav.Link onClick={this.logout}>Logout</Nav.Link>
 						) : (
-							<span className="jsx-wrapper-ele">
+							// We can't have two direct children, so we have to
+							// wrap in an element
+							<span className="jsx-wrapper-stack-and-space">
 								<Nav.Link
 									href="/login"
 									onClick={e =>

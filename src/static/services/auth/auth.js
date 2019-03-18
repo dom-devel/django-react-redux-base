@@ -78,6 +78,14 @@ const auth = {
       return Promise.resolve(true);
     });
   },
+
+  /**
+   * Remove local token if invalid.
+   */
+  deleteInvalidToken() {
+    localStorage.removeItem("auth_token");
+  },
+
   /**
    * Checks if a user is logged in
    */

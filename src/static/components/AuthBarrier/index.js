@@ -60,9 +60,9 @@ class AuthBarrier extends Component {
 	componentDidCatch(error) {
 		if (error === accessDenied) {
 			// Why on earth does adding this line in
-			// make the app work?
+			// you have to setState in order for the app to work...
 			//
-
+			// I'm not entirely sure why...
 			// This uses redux think so perhaps it doesnt trigger
 			// immediately? perhaps set state could work because
 			// it triggers a re-render?
