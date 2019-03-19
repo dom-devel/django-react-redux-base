@@ -64,6 +64,7 @@ export function logout() {
  * @param  {string} data.redirectTo The location to redirect after submitting the form
  */
 export function registerRequest(data) {
+	console.log(data);
 	return { type: REGISTER_REQUEST, data };
 }
 

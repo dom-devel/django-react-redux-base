@@ -58,7 +58,7 @@ class NavBar extends React.Component {
 							href="/primary"
 							onClick={e => this.goToLocation(e, "/primary")}
 						>
-							Primary
+							Not Found Page
 						</Nav.Link>
 						{this.props.loggedIn ? (
 							<Nav.Link onClick={this.logout}>Logout</Nav.Link>

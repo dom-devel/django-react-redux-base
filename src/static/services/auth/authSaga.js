@@ -64,7 +64,8 @@ export function* registerFlow() {
 	while (true) {
 		// We always listen to `REGISTER_REQUEST` actions
 		const request = yield take(REGISTER_REQUEST);
-		const { first_name, last_name, email, password } = request.data;
+		console.log(request);
+		const { firstName, lastName, email, password } = request.data;
 
 		// We call the `authorize` task with the data, telling it that we are registering a user
 		// This returns `true` if the registering was successful, `false` if not
@@ -72,8 +73,8 @@ export function* registerFlow() {
 			email,
 			password,
 			isRegistering: true,
-			first_name,
-			last_name
+			firstName,
+			lastName
 		});
 
 		// If we could register a user, we send the appropriate actions
@@ -172,8 +173,8 @@ export function* authorize({
 	email,
 	password,
 	isRegistering,
-	first_name,
-	last_name
+	firstName,
+	lastName
 }) {
 	// We send an action that tells Redux we're sending a request
 	yield put({ type: SENDING_REQUEST, sending: true });
@@ -191,8 +192,8 @@ export function* authorize({
 				auth.register,
 				email,
 				password,
-				first_name,
-				last_name
+				firstName,
+				lastName
 			);
 		} else {
 			response = yield call(auth.login, email, password);

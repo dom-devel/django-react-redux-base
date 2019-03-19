@@ -28,8 +28,8 @@ const Form = t.form.Form;
 t.form.Form.templates = templates;
 
 const Register = t.struct({
-	first_name: t.String,
-	last_name: t.String,
+	firstName: t.String,
+	lastName: t.String,
 	email: t.String,
 	password: t.String
 });
@@ -45,10 +45,10 @@ const RegisterFormOptions = {
 		email: {
 			error: "This is required."
 		},
-		first_name: {
+		firstName: {
 			error: "This is required."
 		},
-		last_name: {
+		lastName: {
 			error: "This is required."
 		}
 	},
@@ -91,8 +91,8 @@ class RegisterView extends Component {
 			formValues: {
 				email: "",
 				password: "",
-				first_name: "",
-				last_name: ""
+				firstName: "",
+				lastName: ""
 			},
 			hasFormValidated: false,
 			redirectTo: redirectRoute
@@ -124,8 +124,8 @@ class RegisterView extends Component {
 			// Pass through as object for easier
 			// unpacking later
 			this.props.actions.registerRequest({
-				first_name: value.first_name,
-				last_name: value.last_name,
+				firstName: value.firstName,
+				lastName: value.lastName,
 				email: value.email,
 				password: value.password,
 				redirectTo: this.state.redirectTo

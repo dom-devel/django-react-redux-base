@@ -100,7 +100,7 @@ const auth = {
    * @param  {string} username The username of the user
    * @param  {string} password The password of the user
    */
-  register(email, password, firstname, lastname) {
+  register(email, password, firstName, lastName) {
     if (auth.loggedIn()) return Promise.resolve(true);
 
     return axios({
@@ -113,12 +113,12 @@ const auth = {
       data: {
         email,
         password,
-        firstname,
-        lastname
+        // Convert js vars to python
+        first_name: firstName,
+        last_name: lastName
       }
     }).then(() => auth.login(email, password));
-  },
-  onChange() {}
+  }
 };
 
 export default auth;
