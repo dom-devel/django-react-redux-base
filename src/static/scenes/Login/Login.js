@@ -169,4 +169,6 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(LoginView);
+// Export non connected view for unit testing without redux
+// store connection.
 export { LoginView as LoginViewNotConnected };

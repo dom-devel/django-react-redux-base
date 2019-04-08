@@ -13,6 +13,7 @@ virtualenv/
 htmlcov/
 src/static_dist/
 src/static_root/
+webpack/src/static_dist/
 
 # Exclude django local settings
 src/djangoreactredux/development_local_settings.py

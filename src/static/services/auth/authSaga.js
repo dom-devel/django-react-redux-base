@@ -53,6 +53,9 @@ export function* loginFlow() {
 			// Send new URL to react router
 			yield put(push(redirectTo)); // Go to Home page
 		}
+		// 	else if (winner.logout) {
+		// 	// console.log("sdsd");
+		// }
 	}
 }
 
@@ -64,7 +67,7 @@ export function* registerFlow() {
 	while (true) {
 		// We always listen to `REGISTER_REQUEST` actions
 		const request = yield take(REGISTER_REQUEST);
-		console.log(request);
+
 		const { firstName, lastName, email, password } = request.data;
 
 		// We call the `authorize` task with the data, telling it that we are registering a user
@@ -114,8 +117,7 @@ export function* logoutFlow() {
 			} else {
 				yield put({
 					type: REQUEST_ERROR,
-					error: error.response.data,
-					sending: false
+					statusText: error.response.data
 				});
 			}
 		} finally {
@@ -136,7 +138,11 @@ export function* logoutFlow() {
 function* isTokenInvalid(response) {
 	let tokenValid = false;
 	if ("non_field_errors" in response.data) {
-		if (response.data.non_field_errors.includes("Invalid token.")) {
+		if (
+			response.data.non_field_errors.some(message =>
+				message.match(/invalid token/gi)
+			)
+		) {
 			yield call(auth.deleteInvalidToken);
 			yield put({ type: IS_USER_LOGGED_IN, newAuthState: false });
 			tokenValid = true;
@@ -155,10 +161,9 @@ function* redirectToHomeWithMessage() {
 	yield put(push("/"));
 	yield put({
 		type: REQUEST_ERROR,
-		error: {
+		statusText: {
 			non_field_errors: ["Your login has expired. Please sign back in."]
-		},
-		sending: false
+		}
 	});
 }
 
@@ -204,8 +209,7 @@ export function* authorize({
 		// If we get an error we send Redux the appropriate action and return
 		yield put({
 			type: REQUEST_ERROR,
-			error: error.response.data,
-			sending: false
+			statusText: error.response.data
 		});
 
 		return false;

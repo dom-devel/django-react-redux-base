@@ -70,4 +70,6 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps)(HomeView);
+// Export non connected view for unit testing without redux
+// store connection.
 export { HomeView as HomeViewNotConnected };

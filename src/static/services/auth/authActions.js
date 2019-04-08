@@ -39,7 +39,7 @@ export function sendingRequest(sending) {
 /**
  * Tells the app we want to log in a user
  * @param  {object} data          The data we're sending for log in
- * @param  {string} data.username The username of the user to log in
+ * @param  {string} data.email The username of the user to log in
  * @param  {string} data.password The password of the user to log in
  * @param  {string} data.redirectTo The location to redirect after submitting the form
  */
@@ -50,7 +50,7 @@ export function loginRequest(data) {
 /**
  * Tells the app we want to log out a user
  */
-export function logout() {
+export function logoutRequest() {
 	return { type: LOGOUT };
 }
 
@@ -64,16 +64,15 @@ export function logout() {
  * @param  {string} data.redirectTo The location to redirect after submitting the form
  */
 export function registerRequest(data) {
-	console.log(data);
 	return { type: REGISTER_REQUEST, data };
 }
 
 /**
  * Sets the `error` state to the error received
- * @param  {object} error The error we got when trying to make the request
+ * @param  {object} statusText The error we got when trying to make the request
  */
-export function requestError(error) {
-	return { type: REQUEST_ERROR, error };
+export function requestError(statusText) {
+	return { type: REQUEST_ERROR, statusText };
 }
 
 /**

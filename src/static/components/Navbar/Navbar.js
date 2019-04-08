@@ -12,20 +12,20 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 
 // Local imports
-import { logout } from "services/auth/authActions";
+import { logoutRequest } from "services/auth/authActions";
 
 class NavBar extends React.Component {
 	static propTypes = {
 		dispatch: PropTypes.func.isRequired,
 		loggedIn: PropTypes.bool.isRequired,
 		actions: PropTypes.shape({
-			logout: PropTypes.func.isRequired
+			logoutRequest: PropTypes.func.isRequired
 		}).isRequired
 	};
 
 	logout = () => {
 		// this.props.dispatch(authLogoutAndRedirect());
-		this.props.actions.logout();
+		this.props.actions.logoutRequest();
 	};
 
 	goToLocation = (e, route) => {
@@ -101,7 +101,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 	return {
 		dispatch,
-		actions: bindActionCreators({ logout }, dispatch)
+		actions: bindActionCreators({ logoutRequest }, dispatch)
 	};
 };
 

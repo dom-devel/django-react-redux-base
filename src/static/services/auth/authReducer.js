@@ -13,7 +13,7 @@ const initialState = {
 	token: "",
 	statusText: {},
 	sendingRequest: false,
-	loggedIn: auth.loggedIn()
+	loggedIn: false
 };
 
 // Takes care of changing the application state
@@ -28,8 +28,8 @@ function reducer(state = initialState, action) {
 		case REQUEST_ERROR:
 			return {
 				...state,
-				statusText: action.error,
-				sendingRequest: action.sending
+				statusText: action,
+				sendingRequest: false
 			};
 		case CLEAR_ERROR:
 			return { ...state, statusText: {} };

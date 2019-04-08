@@ -1,5 +1,5 @@
-{  
-   "extends":[  
+{
+   "extends": [
       "airbnb",
       "prettier",
       "prettier/react"
@@ -8,24 +8,22 @@
    // Support ES6
    "parser": "babel-eslint",
    // Validate JS & JSX files
-   "rules":{  
-      "react/jsx-filename-extension":[  
+   "rules": {
+      "react/jsx-filename-extension": [
          1,
-         {  
-            "extensions":[  
-               ".js",
-               ".jsx"
-            ]
+         {
+            "extensions": [".js", ".jsx"]
          }
       ],
       "react/jsx-max-props-per-line": [0],
       "react/no-multi-comp": [0],
-      "no-console": [0]
+      "no-console": [0],
+      "no-underscore-dangle": [0]
    },
    // Allow for console debut settings & test.
-   "env":{  
-      "browser":true,
-      "node":true,
+   "env": {
+      "browser": true,
+      "node": true,
       "jest": true
    },
    // Allow for absolute imports
