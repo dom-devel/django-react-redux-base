@@ -12,13 +12,13 @@ import reduxLogo from "./images/redux-logo.png";
 
 class HomeView extends React.Component {
     static propTypes = {
-        statusText: PropTypes.shape({}),
+        statusText: PropTypes.array,
         userName: PropTypes.string,
         dispatch: PropTypes.func.isRequired
     };
 
     static defaultProps = {
-        statusText: {},
+        statusText: [],
         userName: ""
     };
 
@@ -27,6 +27,8 @@ class HomeView extends React.Component {
     };
 
     render() {
+        console.log(this.props);
+        console.log(this.props.statusText);
         return (
             <div className="container">
                 <div className="margin-top-medium text-center">
@@ -55,7 +57,7 @@ class HomeView extends React.Component {
                     </p>
                 </div>
                 <div className="margin-top-medium">
-                    <StatusBlock statusText={this.props.statusText} />
+                    <StatusBlock statusTextMessages={this.props.statusText} />
                 </div>
             </div>
         );
@@ -65,7 +67,7 @@ class HomeView extends React.Component {
 const mapStateToProps = state => {
     return {
         userName: state.auth.userName,
-        statusText: state.auth.statusText
+        statusText: state.message.statusText
     };
 };
 

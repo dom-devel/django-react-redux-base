@@ -212,7 +212,9 @@ describe("test logout saga", () => {
 		sagaTester.dispatch(logoutRequest());
 
 		// Wait for logout
-		await sagaTester.waitFor(REQUEST_ERROR);
+		await sagaTester.waitFor("SET_MESSAGE");
+		console.log(sagaTester.getCalledActions());
+		// await sagaTester.waitFor(REQUEST_ERROR);
 
 		// Check if saga has set user to logged out
 		expect(sagaTester.getCalledActions()).toContainEqual(
@@ -253,8 +255,18 @@ describe("test logout saga", () => {
 		// Check if saga contains field with server error
 		expect(sagaTester.getCalledActions()).toContainEqual(
 			expect.objectContaining({
-				type: REQUEST_ERROR,
-				statusText: { non_field_errors: ["Server fail."] }
+				type: REQUEST_ERROR
+			})
+		);
+
+		// Check it also contains set message
+		expect(sagaTester.getCalledActions()).toContainEqual(
+			expect.objectContaining({
+				type: "SET_MESSAGE",
+				statusText: {
+					message: { non_field_errors: ["Server fail."] },
+					statusLevel: "error"
+				}
 			})
 		);
 

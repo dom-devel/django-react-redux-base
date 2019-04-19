@@ -15,22 +15,24 @@ export function checkHttpStatus(response) {
 
 /**
  *  Used to take errors from a form and convert them into a
- *  paragraph for printing to the user for validation.
+ *  single string paragraph.
  *
  * Currently does nothing with the labels of the object.
  *
  * @param  {[object]}           A JS object.
  * @return {[string]}       	A string.
  */
-export function convertFormValidationToParagraph(feedbackObject) {
+export function convertFormValidationToParagraph(feedbackObjectList) {
 	let outputString = "";
-	const entries = Object.entries(feedbackObject);
-
-	entries.forEach(errorArray => {
-		const fieldTitle = errorArray[0];
-		const errorList = errorArray[1].join("<br />");
-		outputString += `${fieldTitle}: ${errorList}<br />`;
+	feedbackObjectList.forEach(errorObject => {
+		const entries = Object.entries(errorObject);
+		entries.forEach(errorArray => {
+			const fieldTitle = errorArray[0];
+			const errorList = errorArray[1].join("<br />");
+			outputString += `${fieldTitle}: ${errorList}<br />`;
+		});
 	});
+
 	return outputString;
 }
 

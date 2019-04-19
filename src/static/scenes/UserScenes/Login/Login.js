@@ -40,7 +40,7 @@ class LoginView extends React.Component {
         dispatch: PropTypes.func.isRequired,
         loggedIn: PropTypes.bool.isRequired,
         sendingRequest: PropTypes.bool.isRequired,
-        statusText: PropTypes.shape({}),
+        statusText: PropTypes.array,
         // From mapDispatch
         actions: PropTypes.shape({
             loginRequest: PropTypes.func.isRequired
@@ -53,7 +53,7 @@ class LoginView extends React.Component {
 
     // ES6 syntax for setting default props on component
     static defaultProps = {
-        statusText: {},
+        statusText: [],
         location: null
     };
 
@@ -114,7 +114,7 @@ class LoginView extends React.Component {
             <div className="container login">
                 <h1 className="text-center">Login</h1>
                 <div className="login-container margin-top-medium">
-                    <StatusBlock statusText={this.props.statusText} />
+                    <StatusBlock statusTextMessages={this.props.statusText} />
                     <form onSubmit={this.onFormSubmit}>
                         <Form
                             // ref, options and type are
@@ -148,7 +148,7 @@ const mapStateToProps = state => {
     return {
         loggedIn: state.auth.loggedIn,
         sendingRequest: state.auth.sendingRequest,
-        statusText: state.auth.statusText
+        statusText: state.message.statusText
     };
 };
 

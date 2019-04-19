@@ -12,15 +12,10 @@ import { take, call, put, fork, race } from "redux-saga/effects";
 import auth from "services/auth/auth";
 import catchInvalidToken from "utils/saga";
 
-import {
-	SENDING_REQUEST,
-	LOGIN_REQUEST,
-	REGISTER_REQUEST,
-	IS_USER_LOGGED_IN,
-	LOGOUT,
-	CHANGE_FORM,
-	REQUEST_ERROR
-} from "services/auth/authConstants";
+// Use non-standard imports
+import * as authConstants from "services/auth/authConstants";
+import * as authActions from "services/auth/authActions";
+import * as messageActions from "services/message/messageActions";
 
 /**
  * Log in saga
@@ -30,7 +25,7 @@ export function* loginFlow() {
 	// Basically here we say "this saga is always listening for actions"
 	while (true) {
 		// And we're listening for `LOGIN_REQUEST` actions and destructuring its payload
-		const request = yield take(LOGIN_REQUEST);
+		const request = yield take(authConstants.LOGIN_REQUEST);
 		const { email, password, redirectTo } = request.data;
 
 		// A `LOGOUT` action may happen while the `authorize` effect is going on, which may
@@ -38,17 +33,14 @@ export function* loginFlow() {
 		// returns the "winner", i.e. the one that finished first
 		const winner = yield race({
 			auth: call(authorize, { email, password, isRegistering: false }),
-			logout: take(LOGOUT)
+			logout: take(authConstants.LOGOUT)
 		});
 
 		// If `authorize` was the winner...
 		if (winner.auth) {
 			// ...we send Redux appropriate actions
-			yield put({ type: IS_USER_LOGGED_IN, newAuthState: true }); // User is logged in (authorized)
-			yield put({
-				type: CHANGE_FORM,
-				newFormState: { email: "", password: "" }
-			}); // Clear form
+			yield put(authActions.setAuthState(true)); // User is logged in (authorized)
+			yield put(authActions.changeForm({ email: "", password: "" })); // Clear form
 
 			// Send new URL to react router
 			yield put(push(redirectTo)); // Go to Home page
@@ -66,7 +58,7 @@ export function* loginFlow() {
 export function* registerFlow() {
 	while (true) {
 		// We always listen to `REGISTER_REQUEST` actions
-		const request = yield take(REGISTER_REQUEST);
+		const request = yield take(authConstants.REGISTER_REQUEST);
 
 		const { firstName, lastName, email, password } = request.data;
 
@@ -82,12 +74,8 @@ export function* registerFlow() {
 
 		// If we could register a user, we send the appropriate actions
 		if (wasSuccessful) {
-			yield put({ type: IS_USER_LOGGED_IN, newAuthState: true }); // User is logged in (authorized) after being registered
-			yield put({
-				type: CHANGE_FORM,
-				newFormState: { username: "", password: "" }
-			}); // Clear form
-
+			yield put(authActions.setAuthState(true)); // User is logged in (authorized) after being registered
+			yield put(authActions.changeForm()); // Clear form
 			yield put(push("/"));
 		}
 	}
@@ -100,28 +88,32 @@ export function* registerFlow() {
  */
 export function* logoutFlow() {
 	while (true) {
-		yield take(LOGOUT);
-		yield put({ type: SENDING_REQUEST, sending: true });
+		yield take(authConstants.LOGOUT);
+		yield put(authActions.sendingRequest(true));
 
 		// We're sending a request so it has to be exception wrapped
 		try {
 			yield call(auth.logout);
-			yield put({ type: IS_USER_LOGGED_IN, newAuthState: false });
+			yield put(authActions.setAuthState(false));
 			yield put(push("/"));
 		} catch (error) {
 			// This block checks if token has expired when making
 			// a request that needs authentication
+			// console.log(error);
 			const tokenInvalid = yield call(isTokenInvalid, error.response);
 			if (tokenInvalid) {
 				yield call(redirectToHomeWithMessage);
 			} else {
-				yield put({
-					type: REQUEST_ERROR,
-					statusText: error.response.data
-				});
+				yield put(authActions.requestError());
+				yield put(
+					messageActions.setMessage({
+						message: error.response.data,
+						statusLevel: "error"
+					})
+				);
 			}
 		} finally {
-			yield put({ type: SENDING_REQUEST, sending: false });
+			yield put(authActions.sendingRequest(false));
 		}
 	}
 }
@@ -144,7 +136,7 @@ function* isTokenInvalid(response) {
 			)
 		) {
 			yield call(auth.deleteInvalidToken);
-			yield put({ type: IS_USER_LOGGED_IN, newAuthState: false });
+			yield put(authActions.setAuthState(false));
 			tokenValid = true;
 		}
 	}
@@ -159,12 +151,16 @@ function* isTokenInvalid(response) {
  */
 function* redirectToHomeWithMessage() {
 	yield put(push("/"));
-	yield put({
-		type: REQUEST_ERROR,
-		statusText: {
-			non_field_errors: ["Your login has expired. Please sign back in."]
-		}
-	});
+	yield put(
+		messageActions.setMessage({
+			message: {
+				non_field_errors: [
+					"Your login has expired. Please sign back in."
+				]
+			},
+			statusLevel: "warning"
+		})
+	);
 }
 
 /**
@@ -182,7 +178,7 @@ export function* authorize({
 	lastName
 }) {
 	// We send an action that tells Redux we're sending a request
-	yield put({ type: SENDING_REQUEST, sending: true });
+	yield put(authActions.sendingRequest(true));
 
 	// We then try to register or log in the user, depending on the request
 	try {
@@ -206,16 +202,33 @@ export function* authorize({
 
 		return response;
 	} catch (error) {
+		// The only way to tell if axios has found network errors is as follows
+		// https://github.com/axios/axios/issues/383
+		let error_data;
+		console.log(error);
+		console.log(typeof error);
+		// console.log(typeof error);
+		if (!error.status) {
+			// network error
+			error_data = { Errors: "Network failure" };
+		} else {
+			error_data = error.response.data;
+		}
+
 		// If we get an error we send Redux the appropriate action and return
-		yield put({
-			type: REQUEST_ERROR,
-			statusText: error.response.data
-		});
+		yield put(authActions.requestError());
+
+		yield put(
+			messageActions.setMessage({
+				message: error.response.data,
+				statusLevel: "error"
+			})
+		);
 
 		return false;
 	} finally {
 		// When done, we tell Redux we're not in the middle of a request any more
-		yield put({ type: SENDING_REQUEST, sending: false });
+		yield put(authActions.sendingRequest(false));
 	}
 }
 

@@ -6,7 +6,7 @@ import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
 
 import authReducer from "services/auth/authReducer";
-// import dataReducer from "services/data/reducer";
+import messageReducer from "services/message/messageReducer";
 import history from "utils/history";
 
 /**
@@ -17,7 +17,7 @@ export default function createReducer(injectedReducers = {}) {
 		// Had to manually set this. Doing the clever combine
 		// below meant it was failing to set
 		auth: authReducer,
-		// data: dataReducer,
+		message: messageReducer,
 
 		router: connectRouter(history),
 		...injectedReducers

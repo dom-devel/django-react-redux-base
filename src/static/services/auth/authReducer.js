@@ -2,18 +2,17 @@ import {
 	CHANGE_FORM,
 	IS_USER_LOGGED_IN,
 	SENDING_REQUEST,
-	REQUEST_ERROR,
-	CLEAR_ERROR
+	REQUEST_ERROR
 } from "services/auth/authConstants";
+
 import auth from "services/auth/auth";
 
 // The initial application state
 const initialState = {
 	userName: "",
 	token: "",
-	statusText: {},
 	sendingRequest: false,
-	loggedIn: false
+	loggedIn: auth.loggedIn()
 };
 
 // Takes care of changing the application state
@@ -28,11 +27,8 @@ function reducer(state = initialState, action) {
 		case REQUEST_ERROR:
 			return {
 				...state,
-				statusText: action,
 				sendingRequest: false
 			};
-		case CLEAR_ERROR:
-			return { ...state, statusText: {} };
 		default:
 			return state;
 	}

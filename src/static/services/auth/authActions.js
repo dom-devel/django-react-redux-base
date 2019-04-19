@@ -71,13 +71,7 @@ export function registerRequest(data) {
  * Sets the `error` state to the error received
  * @param  {object} statusText The error we got when trying to make the request
  */
-export function requestError(statusText) {
-	return { type: REQUEST_ERROR, statusText };
-}
-
-/**
- * Sets the `error` state as empty
- */
-export function clearError() {
-	return { type: CLEAR_ERROR };
+export function requestError() {
+	console.log("ahah");
+	return { type: REQUEST_ERROR };
 }

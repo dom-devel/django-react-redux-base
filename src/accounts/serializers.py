@@ -3,6 +3,8 @@ from rest_framework import serializers
 from accounts.models import User
 from lib.utils import validate_email as email_is_valid
 
+from djoser.serializers import UserCreateSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,7 +23,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "email", "first_name", "last_name", "password")
+        fields = ("id", "email", "name", "password")
 
     def create(self, validated_data):
         """
@@ -33,6 +35,21 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+    """ Add name to serialiser for user. (Djoser doesn't uses REQUIRED_FIELDS)
+    but that will also affect superuser.
+    """
+
+    class Meta:
+        model = User
+        fields = tuple(User.REQUIRED_FIELDS) + (
+            User.USERNAME_FIELD,
+            User._meta.pk.name,
+            "password",
+            "name",
+        )
 
 
 def validate_email(self, value):

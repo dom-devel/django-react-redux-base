@@ -36,6 +36,6 @@ RestrictedPage.displayName = "RestrictedPage";
 // 	EnsureAuthenticatedConnector
 // );
 
-const AuthRestrictedPage = connEnsureAuth(RestrictedPage);
+// const AuthRestrictedPage = connEnsureAuth(RestrictedPage);
 
-export default AuthRestrictedPage;
+export default RestrictedPage;

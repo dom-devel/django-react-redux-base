@@ -3,38 +3,42 @@ import PropTypes from "prop-types";
 import classNames from "classnames";
 
 // Local imports
-import { convertFormValidationToParagraph, isEmptyObject } from "utils/utils";
+import { isEmptyObject } from "utils/utils";
 
 /**
  * Takes the an object of field validations from the server
  * and renders them into status messages to appear above a form.
- * @param  {[object]} 	An object where the keys are fields and values
- *                      are the arrays of errors associated with each
- *                      value.
+ *
+ * Sidenote: Because the object is passed in here, it comes in as an object. 
+ * If this was being pulled from the store, then it would just be the array.
+ *
+ * NBED -- This currently re-renders everytime state changes. (well at least it calls)
+ * the convert form valiation to paragraph. Should probably attempt to prevent that.
+ *
+ * @param  {[object]} 	An object which contains a list of objects. Each object
+ 						in the list represents one set of messages. In the message object 
+ 						the keys are fields and values are the arrays of errors
+ 						associated with each value.
  * @return {[jsx]}  	Returns a JSX component
  */
-const StatusBlock = ({ statusText }) => {
+const StatusBlock = ({ statusTextMessages }) => {
 	// Easy way to check for specific errors rather than
 	// looping through multiple arrays
-	const singleStringStatus = convertFormValidationToParagraph(statusText);
 
-	const statusTextClassNames = classNames({
-		alert: true,
-		"alert-danger":
-			singleStringStatus.indexOf("Authentication Error") === 0,
-		"alert-warning": singleStringStatus.indexOf("required") === 0,
-		"alert-success":
-			singleStringStatus.indexOf("Authentication Error") !== 0
-	});
+	console.log(statusTextMessages);
 
 	let messageDiv = <div />;
-	if (!isEmptyObject(statusText)) {
+	if (statusTextMessages.length !== 0) {
 		messageDiv = (
 			<div className="row">
 				<div className="col-sm-12">
-					<div className={statusTextClassNames}>
-						<StatusMessages feedbackObject={statusText} />
-					</div>
+					{statusTextMessages.map((item, index) => (
+						<div
+							className={getBootstrapErrorClass(item.statusLevel)}
+						>
+							<StatusMessages statusTextObject={item.message} />
+						</div>
+					))}
 				</div>
 			</div>
 		);
@@ -50,8 +54,23 @@ StatusBlock.propTypes = {
 	// (because the fields will change both key & number)
 	// so unsure how to validate this. We use shape, not object
 	// to appease eslint.
-	statusText: PropTypes.shape({})
+	statusTextMessages: PropTypes.array
 };
+
+/**
+ * @param  {[object]} 	Take a status level and return the correct bootstrap class.
+ */
+function getBootstrapErrorClass(statusLevel) {
+	let bootstrapClass;
+	if (statusLevel === "error") {
+		bootstrapClass = "alert-danger";
+	} else if (statusLevel === "warning") {
+		bootstrapClass = "alert-warning";
+	} else {
+		bootstrapClass = "alert-success";
+	}
+	return bootstrapClass + " alert";
+}
 
 /**
  *  Used to take errors from a form and convert them into a
@@ -59,12 +78,11 @@ StatusBlock.propTypes = {
  *
  * Currently does nothing with the labels of the object.
  *
- * @param  {[object]}           A JS object.
+ * @param  {[object]}           A list of JS objects.
  * @return {[string]}       	A string.
  */
-const StatusMessages = ({ feedbackObject }) => {
-	const entries = Object.entries(feedbackObject);
-
+const StatusMessages = ({ statusTextObject }) => {
+	const entries = Object.entries(statusTextObject);
 	// We can use i for key as messages are static
 	const listItems = entries.map((errorArray, i) => {
 		const fieldLabel = errorArray[0];
@@ -97,7 +115,7 @@ const StatusMessages = ({ feedbackObject }) => {
 StatusMessages.displayName = "StatusMessages";
 
 StatusMessages.propTypes = {
-	feedbackObject: PropTypes.shape({}).isRequired
+	statusTextObject: PropTypes.shape({}).isRequired
 };
 
 export default StatusBlock;

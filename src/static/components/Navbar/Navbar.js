@@ -13,6 +13,7 @@ import { bindActionCreators } from "redux";
 
 // Local imports
 import { logoutRequest } from "services/auth/authActions";
+import * as urls from "routesConstants";
 
 class NavBar extends React.Component {
 	static propTypes = {
@@ -43,14 +44,16 @@ class NavBar extends React.Component {
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="mr-auto">
 						<Nav.Link
-							href="/"
-							onClick={e => this.goToLocation(e, "/")}
+							href={urls.HOME}
+							onClick={e => this.goToLocation(e, urls.HOME)}
 						>
 							Home
 						</Nav.Link>
 						<Nav.Link
-							href="/restricted"
-							onClick={e => this.goToLocation(e, "/restricted")}
+							href={urls.EXAMPLE_RESTRICTED}
+							onClick={e =>
+								this.goToLocation(e, urls.EXAMPLE_RESTRICTED)
+							}
 						>
 							Restricted
 						</Nav.Link>
@@ -67,17 +70,17 @@ class NavBar extends React.Component {
 							// wrap in an element
 							<span className="jsx-wrapper-stack-and-space">
 								<Nav.Link
-									href="/login"
+									href={urls.AUTH_LOGIN}
 									onClick={e =>
-										this.goToLocation(e, "/login")
+										this.goToLocation(e, urls.AUTH_LOGIN)
 									}
 								>
 									Login
 								</Nav.Link>
 								<Nav.Link
-									href="/register"
+									href={urls.AUTH_REGISTER}
 									onClick={e =>
-										this.goToLocation(e, "/register")
+										this.goToLocation(e, urls.AUTH_REGISTER)
 									}
 								>
 									Sign-up
@@ -105,7 +108,9 @@ const mapDispatchToProps = dispatch => {
 	};
 };
 
-export default connect(
+const ConnectedNavBar = connect(
 	mapStateToProps,
 	mapDispatchToProps
 )(NavBar);
+export { ConnectedNavBar as NavBar };
+export { NavBar as NavBarNotConnected };

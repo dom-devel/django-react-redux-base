@@ -26,7 +26,8 @@ const EnsureAuthenticatedConnector = ComposedComponent => props => {
 };
 
 EnsureAuthenticatedConnector.propTypes = {
-	loggedIn: PropTypes.bool.isRequired
+	loggedIn: PropTypes.bool.isRequired,
+	allowLoggedIn: PropTypes.bool.isRequired
 };
 
 // We connect our function to the store, because it needs

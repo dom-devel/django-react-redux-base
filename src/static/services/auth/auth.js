@@ -3,6 +3,7 @@ import axios from "axios";
 
 // Import local
 import { SERVER_URL } from "utils/config";
+import * as urls from "routesConstants";
 
 let localStorage;
 
@@ -25,20 +26,23 @@ const auth = {
      */
     login(email, password) {
         if (auth.loggedIn()) return Promise.resolve(true);
-        const credentials = btoa(`${email}:${password}`);
+        // const credentials = btoa(`${email}:${password}`);
         // Request to login
         return axios({
             method: "post",
-            url: `${SERVER_URL}/api/v1/accounts/login/`,
+            url: `${SERVER_URL}${urls.AUTH_LOGIN_API}`,
             headers: {
                 Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: `Basic ${credentials}`
+                "Content-Type": "application/json"
+            },
+            data: {
+                email,
+                password
             }
         }).then(response => {
             // Save token to local storage
-            if (response.data.token) {
-                localStorage.auth_token = response.data.token;
+            if (response.data.auth_token) {
+                localStorage.auth_token = response.data.auth_token;
             } else {
                 throw "Local token wasn't returned";
             }
@@ -61,7 +65,7 @@ const auth = {
         // Send request to django and delete local token
         return axios({
             method: "post",
-            url: `${SERVER_URL}/api/v1/accounts/logout/`,
+            url: `${SERVER_URL}${urls.AUTH_LOGOUT_API}`,
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
@@ -95,12 +99,12 @@ const auth = {
      * @param  {string} username The username of the user
      * @param  {string} password The password of the user
      */
-    register(email, password, firstName, lastName) {
+    register(email, password, name) {
         if (auth.loggedIn()) return Promise.resolve(true);
 
         return axios({
             method: "post",
-            url: `${SERVER_URL}/api/v1/accounts/register/`,
+            url: `${SERVER_URL}${urls.AUTH_REGISTER_API}`,
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json"
@@ -108,9 +112,7 @@ const auth = {
             data: {
                 email,
                 password,
-                // Convert js vars to python
-                first_name: firstName,
-                last_name: lastName
+                name
             }
         }).then(() => auth.login(email, password));
     }

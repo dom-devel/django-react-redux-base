@@ -28,8 +28,7 @@ const Form = t.form.Form;
 t.form.Form.templates = templates;
 
 const Register = t.struct({
-	firstName: t.String,
-	lastName: t.String,
+	name: t.String,
 	email: t.String,
 	password: t.String
 });
@@ -45,10 +44,7 @@ const RegisterFormOptions = {
 		email: {
 			error: "This is required."
 		},
-		firstName: {
-			error: "This is required."
-		},
-		lastName: {
+		name: {
 			error: "This is required."
 		}
 	},
@@ -61,7 +57,7 @@ class RegisterView extends Component {
 	static propTypes = {
 		// From mapState
 		sendingRequest: PropTypes.bool.isRequired,
-		statusText: PropTypes.shape({}),
+		statusText: PropTypes.shape([]),
 		loggedIn: PropTypes.bool.isRequired,
 		// From mapDispatch
 		actions: PropTypes.shape({
@@ -74,7 +70,7 @@ class RegisterView extends Component {
 	};
 
 	static defaultProps = {
-		statusText: {},
+		statusText: [],
 		location: null
 	};
 
@@ -91,8 +87,7 @@ class RegisterView extends Component {
 			formValues: {
 				email: "",
 				password: "",
-				firstName: "",
-				lastName: ""
+				name: ""
 			},
 			hasFormValidated: false,
 			redirectTo: redirectRoute
@@ -124,8 +119,7 @@ class RegisterView extends Component {
 			// Pass through as object for easier
 			// unpacking later
 			this.props.actions.registerRequest({
-				firstName: value.firstName,
-				lastName: value.lastName,
+				name: value.name,
 				email: value.email,
 				password: value.password,
 				redirectTo: this.state.redirectTo
@@ -150,7 +144,7 @@ class RegisterView extends Component {
 			<div className="container login">
 				<h1 className="text-center">Register</h1>
 				<div className="login-container margin-top-medium">
-					<StatusBlock statusText={this.props.statusText} />
+					<StatusBlock statusTextMessages={this.props.statusText} />
 					<form
 						onSubmit={this.onFormSubmit}
 						className={formValidationClass}
@@ -184,7 +178,7 @@ const mapStateToProps = state => {
 	return {
 		loggedIn: state.auth.loggedIn,
 		sendingRequest: state.auth.sendingRequest,
-		statusText: state.auth.statusText
+		statusText: state.message.statusText
 	};
 };
 

@@ -24,6 +24,9 @@ except Exception as e:
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = environ_settings.SECRET_KEY
 
+# Check environment type
+ENVIRONMENT = environ_settings.ENVIRONMENT
+
 # Databases
 DATABASES = {
     "default": {
@@ -57,12 +60,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.admin",
     "rest_framework",
+    # We're using the following frameworks for auth
+    "rest_framework.authtoken",
+    "djoser",
     "knox",
     "sslserver",
     # 'django_extensions',
     "accounts",
     "base",
 ]
+
+# Install any extra apps for environment
+INSTALLED_APPS.extend(environ_settings.INSTALLED_APPS_EXTRA)
 
 MIDDLEWARE_CLASSES = [
     "django.middleware.security.SecurityMiddleware",
@@ -72,8 +81,9 @@ MIDDLEWARE_CLASSES = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.common.CommonMiddleware",
 ]
+
+# APPEND_SLASH = True
 
 TEMPLATES = [
     {
@@ -118,9 +128,10 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_dist")]
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [],
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "knox.auth.TokenAuthentication",
+        # "knox.auth.TokenAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
         # "rest_framework.authentication.SessionAuthentication",
-        # "rest_framework.authentication.BasicAuthentication",
+        # "rest_framework.authentication.BasicAuthentication"
     ],
     # 'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
@@ -130,6 +141,10 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.FormParser",
         "rest_framework.parsers.MultiPartParser",
     ],
+    # "DEFAULT_RENDERER_CLASSES": (
+    #     "rest_framework.renderers.JSONRenderer",
+    #     # 'rest_framework.renderers.BrowsableAPIRenderer',
+    # ),
 }
 
 # ############ REST KNOX ########################
@@ -138,6 +153,20 @@ REST_KNOX = {
     "AUTH_TOKEN_CHARACTER_LENGTH": 64,
     "USER_SERIALIZER": "accounts.serializers.UserSerializer",
 }
+
+
+# ############ DJOSER AUTH ########################
+# DJOSER = {
+#     # 'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+#     # 'ACTIVATION_URL': '#/activate/{uid}/{token}',
+#     # 'SEND_ACTIVATION_EMAIL': True,
+#     "SERIALIZERS": {"user_create": "accounts.serializers.CustomUserCreateSerializer"}
+# }
+
+# if ENVIRONMENT != "dev":
+#     DJOSER_EXTRA = {"SEND_ACTIVATION_EMAIL": True}
+
+#     DJOSER = {**DJOSER, **DJOSER_EXTRA}
 
 
 DEBUG = True
@@ -152,7 +181,7 @@ REST_FRAMEWORK[
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": True,
+    "disable_existing_loggers": False,
     "root": {"level": "DEBUG", "handlers": ["django_rest_logger_handler"]},
     "formatters": {
         "verbose": {

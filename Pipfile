@@ -4,15 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "==1.11"
+django = "~=1.11"
 django-rest-framework = "*"
 django-rest-knox = "*"
 "psycopg2-binary" = "*"
-background = {editable = true, git = "https://github.com/Seedstars/django-rest-logger/"}
+djoser = "*"
+django-rest-logger = {editable = true,git = "https://github.com/Seedstars/django-rest-logger.git"}
+disposable-email-checker = "*"
 django-disposable-email-checker = "*"
 
 [dev-packages]
 django-sslserver = "*"
+django-rest-swagger = "*"
 
 [requires]
 python_version = "3.6"
