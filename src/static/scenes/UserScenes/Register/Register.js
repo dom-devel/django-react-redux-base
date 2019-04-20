@@ -17,7 +17,7 @@ import t from "tcomb-form";
 // import en from "tcomb-form/lib/i18n/en";
 // This is local version currently
 // https://github.com/dom-devel/tcomb-form-templates-bootstrap
-import templates from "tcomb-form-templates-bootstrap";
+import templates from "tcomb-form-templates-bulma";
 
 // Local helpers
 import { registerRequest } from "services/auth/authActions";

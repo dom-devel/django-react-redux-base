@@ -11,6 +11,8 @@ import StatusBlock from "components/StatusBlock/StatusBlock";
 
 // Helpers
 import t from "tcomb-form";
+import templates from "tcomb-form-templates-bulma";
+t.form.Form.templates = templates;
 
 // Local imports
 import { loginRequest } from "services/auth/authActions";

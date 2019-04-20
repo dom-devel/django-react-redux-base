@@ -3,8 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // React-bootstrap components
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
+import { Navbar, NavbarBrand, NavbarItem, NavbarStart } from "bloomer";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -37,58 +36,55 @@ class NavBar extends React.Component {
 	render() {
 		return (
 			<Navbar bg="light" expand="lg">
-				<Navbar.Brand href="/" onClick={e => this.goToLocation(e, "/")}>
+				<NavbarBrand href="/" onClick={e => this.goToLocation(e, "/")}>
 					React-Bootstrap
-				</Navbar.Brand>
-				<Navbar.Toggle aria-controls="basic-navbar-nav" />
-				<Navbar.Collapse id="basic-navbar-nav">
-					<Nav className="mr-auto">
-						<Nav.Link
-							href={urls.HOME}
-							onClick={e => this.goToLocation(e, urls.HOME)}
-						>
-							Home
-						</Nav.Link>
-						<Nav.Link
-							href={urls.EXAMPLE_RESTRICTED}
-							onClick={e =>
-								this.goToLocation(e, urls.EXAMPLE_RESTRICTED)
-							}
-						>
-							Restricted
-						</Nav.Link>
-						<Nav.Link
-							href="/primary"
-							onClick={e => this.goToLocation(e, "/primary")}
-						>
-							Not Found Page
-						</Nav.Link>
-						{this.props.loggedIn ? (
-							<Nav.Link onClick={this.logout}>Logout</Nav.Link>
-						) : (
-							// We can't have two direct children, so we have to
-							// wrap in an element
-							<span className="jsx-wrapper-stack-and-space">
-								<Nav.Link
-									href={urls.AUTH_LOGIN}
-									onClick={e =>
-										this.goToLocation(e, urls.AUTH_LOGIN)
-									}
-								>
-									Login
-								</Nav.Link>
-								<Nav.Link
-									href={urls.AUTH_REGISTER}
-									onClick={e =>
-										this.goToLocation(e, urls.AUTH_REGISTER)
-									}
-								>
-									Sign-up
-								</Nav.Link>
-							</span>
-						)}
-					</Nav>
-				</Navbar.Collapse>
+				</NavbarBrand>
+				<NavbarStart id="basic-navbar-nav">
+					<NavbarItem
+						href={urls.HOME}
+						onClick={e => this.goToLocation(e, urls.HOME)}
+					>
+						Home
+					</NavbarItem>
+					<NavbarItem
+						href={urls.EXAMPLE_RESTRICTED}
+						onClick={e =>
+							this.goToLocation(e, urls.EXAMPLE_RESTRICTED)
+						}
+					>
+						Restricted
+					</NavbarItem>
+					<NavbarItem
+						href={"/primary"}
+						onClick={e => this.goToLocation(e, "/primary")}
+					>
+						Not Found Page
+					</NavbarItem>
+					{this.props.loggedIn ? (
+						<NavbarItem onClick={this.logout}>Logout</NavbarItem>
+					) : (
+						// We can't have two direct children, so we have to
+						// wrap in an element
+						<span className="jsx-wrapper-stack-and-space">
+							<NavbarItem
+								href={urls.AUTH_LOGIN}
+								onClick={e =>
+									this.goToLocation(e, urls.AUTH_LOGIN)
+								}
+							>
+								Login
+							</NavbarItem>
+							<NavbarItem
+								href={urls.AUTH_REGISTER}
+								onClick={e =>
+									this.goToLocation(e, urls.AUTH_REGISTER)
+								}
+							>
+								Sign-up
+							</NavbarItem>
+						</span>
+					)}
+				</NavbarStart>
 			</Navbar>
 		);
 	}

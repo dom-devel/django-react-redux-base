@@ -20,7 +20,9 @@ class App extends React.Component {
         return (
             <div className="app">
                 <NavBar />
-                <div>{this.props.children}</div>
+                <section className="section">
+                    <div className="container">{this.props.children}</div>
+                </section>
             </div>
         );
     }

@@ -27,7 +27,6 @@ const VENDOR = [
     "redux",
     "connected-react-router",
     "jquery",
-    "bootstrap-loader",
     "font-awesome-webpack!./styles/font-awesome.config.prod.js"
 ];
 

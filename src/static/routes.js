@@ -8,7 +8,8 @@ import {
 	RegisterView,
 	RestrictedView,
 	PasswordResetView,
-	NotFoundView
+	NotFoundView,
+	SingleCenterColMed
 } from "scenes";
 // To save on space here we
 import auth from "services/auth/auth";
@@ -33,7 +34,9 @@ PrivateRoute.propTypes = {
 
 export default (
 	<Switch>
-		<Route exact path="/" component={HomeView} />
+		<SingleCenterColMed>
+			<Route exact path="/" component={HomeView} />
+		</SingleCenterColMed>
 		<Route path={urls.AUTH_LOGIN} component={LoginView} />
 		<Route path={urls.AUTH_REGISTER} component={RegisterView} />
 		<Route path={urls.AUTH_PASSWORD_RESET} component={PasswordResetView} />

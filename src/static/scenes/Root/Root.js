@@ -6,19 +6,16 @@ import PropTypes from "prop-types";
 import routes from "routes";
 import App from "scenes/App/App";
 
+// Import bulma styling
+// import "bulma/css/bulma.css";
+
 const Root = ({ store, history }) => {
 	return (
-		<div>
-			<Provider store={store}>
-				<div>
-					<App>
-						<ConnectedRouter history={history}>
-							{routes}
-						</ConnectedRouter>
-					</App>
-				</div>
-			</Provider>
-		</div>
+		<Provider store={store}>
+			<App>
+				<ConnectedRouter history={history}>{routes}</ConnectedRouter>
+			</App>
+		</Provider>
 	);
 };
 
