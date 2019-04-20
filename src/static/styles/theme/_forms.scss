@@ -1,0 +1,32 @@
+/*
+* TComb form returns a fieldset with all the form elements inside it. 
+*
+* By default Bulma applies margin to the bottom of all form fields except the
+* last one. Because the button is no longer directly below the last field (it will be outside
+* the fieldset), this fails and so we override this.
+*/
+
+body .field {
+	margin-bottom: 0.75rem;
+}
+
+/*
+* Bending form formatting to fit tcomb HTML
+*/
+
+.is-danger .input,
+.is-danger.textarea {
+	border-color: $danger;
+}
+
+/*
+* Personal style overrides
+*/
+
+.message .message-body {
+	padding: 0.5em 1.2em;
+}
+
+.jsx-wrapper-stack-and-space {
+	display: flex;
+}

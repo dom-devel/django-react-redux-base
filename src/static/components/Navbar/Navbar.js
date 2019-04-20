@@ -3,7 +3,13 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // React-bootstrap components
-import { Navbar, NavbarBrand, NavbarItem, NavbarStart } from "bloomer";
+import {
+	Navbar,
+	NavbarBrand,
+	NavbarItem,
+	NavbarStart,
+	NavbarEnd
+} from "bloomer";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -37,15 +43,11 @@ class NavBar extends React.Component {
 		return (
 			<Navbar bg="light" expand="lg">
 				<NavbarBrand href="/" onClick={e => this.goToLocation(e, "/")}>
-					React-Bootstrap
+					<NavbarItem href={urls.HOME} className="is-size-4">
+						React-Bootstrap
+					</NavbarItem>
 				</NavbarBrand>
 				<NavbarStart id="basic-navbar-nav">
-					<NavbarItem
-						href={urls.HOME}
-						onClick={e => this.goToLocation(e, urls.HOME)}
-					>
-						Home
-					</NavbarItem>
 					<NavbarItem
 						href={urls.EXAMPLE_RESTRICTED}
 						onClick={e =>
@@ -60,6 +62,8 @@ class NavBar extends React.Component {
 					>
 						Not Found Page
 					</NavbarItem>
+				</NavbarStart>
+				<NavbarEnd>
 					{this.props.loggedIn ? (
 						<NavbarItem onClick={this.logout}>Logout</NavbarItem>
 					) : (
@@ -84,7 +88,7 @@ class NavBar extends React.Component {
 							</NavbarItem>
 						</span>
 					)}
-				</NavbarStart>
+				</NavbarEnd>
 			</Navbar>
 		);
 	}

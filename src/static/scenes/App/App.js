@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { ConnectedRouter } from "connected-react-router";
+import routes from "routes";
 
 import "styles/main.scss";
 
@@ -9,7 +11,7 @@ import { NavBar } from "components/Navbar/Navbar";
 
 class App extends React.Component {
     static propTypes = {
-        children: PropTypes.shape().isRequired
+        history: PropTypes.shape().isRequired
     };
 
     static defaultProps = {
@@ -19,9 +21,15 @@ class App extends React.Component {
     render() {
         return (
             <div className="app">
-                <NavBar />
+                <div className="container">
+                    <NavBar />
+                </div>
                 <section className="section">
-                    <div className="container">{this.props.children}</div>
+                    <div className="container">
+                        <ConnectedRouter history={this.props.history}>
+                            {routes}
+                        </ConnectedRouter>
+                    </div>
                 </section>
             </div>
         );

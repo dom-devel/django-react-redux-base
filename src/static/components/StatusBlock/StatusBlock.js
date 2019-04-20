@@ -30,16 +30,12 @@ const StatusBlock = ({ statusTextMessages }) => {
 	let messageDiv = <div />;
 	if (statusTextMessages.length !== 0) {
 		messageDiv = (
-			<div className="row">
-				<div className="col-sm-12">
-					{statusTextMessages.map((item, index) => (
-						<div
-							className={getBootstrapErrorClass(item.statusLevel)}
-						>
-							<StatusMessages statusTextObject={item.message} />
-						</div>
-					))}
-				</div>
+			<div className="m-b-m">
+				{statusTextMessages.map((item, index) => (
+					<div className={getBootstrapErrorClass(item.statusLevel)}>
+						<StatusMessages statusTextObject={item.message} />
+					</div>
+				))}
 			</div>
 		);
 	}
@@ -63,13 +59,15 @@ StatusBlock.propTypes = {
 function getBootstrapErrorClass(statusLevel) {
 	let bootstrapClass;
 	if (statusLevel === "error") {
-		bootstrapClass = "alert-danger";
+		bootstrapClass = "is-danger";
 	} else if (statusLevel === "warning") {
-		bootstrapClass = "alert-warning";
+		bootstrapClass = "is-warning";
+	} else if (statusLevel === "success") {
+		bootstrapClass = "is-success";
 	} else {
-		bootstrapClass = "alert-success";
+		bootstrapClass = "is-info";
 	}
-	return bootstrapClass + " alert";
+	return bootstrapClass + " message";
 }
 
 /**
@@ -97,19 +95,19 @@ const StatusMessages = ({ statusTextObject }) => {
 		} else {
 			output = (
 				// eslint-disable-next-line
-				<p key={i}>
+				<div key={i}>
 					{errorArray[0]}
 					{errorArray[1].map(error => (
 						<span>: {error}</span>
 					))}
 					<br />
-				</p>
+				</div>
 			);
 		}
 		return output;
 	});
 
-	return <div>{listItems}</div>;
+	return <div className="message-body">{listItems}</div>;
 };
 
 StatusMessages.displayName = "StatusMessages";

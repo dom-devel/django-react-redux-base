@@ -6,10 +6,10 @@ import PropTypes from "prop-types";
 // Redux imports
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { push } from "connected-react-router";
 
 // Components
 import StatusBlock from "components/StatusBlock/StatusBlock";
+import { Title } from "bloomer";
 
 // Helpers
 import t from "tcomb-form";
@@ -141,34 +141,34 @@ class RegisterView extends Component {
 		}
 
 		return (
-			<div className="container login">
-				<h1 className="text-center">Register</h1>
-				<div className="login-container margin-top-medium">
-					<StatusBlock statusTextMessages={this.props.statusText} />
-					<form
-						onSubmit={this.onFormSubmit}
-						className={formValidationClass}
+			<div>
+				<Title tag="h1" isSize={3}>
+					Register
+				</Title>
+				<StatusBlock statusTextMessages={this.props.statusText} />
+				<form
+					onSubmit={this.onFormSubmit}
+					className={formValidationClass}
+				>
+					<Form
+						ref={ref => {
+							this.registerForm = ref;
+						}}
+						type={Register}
+						options={RegisterFormOptions}
+						value={this.state.formValues}
+						onChange={this.onFormChange}
+					/>
+					<button
+						// NBED if sending request true,
+						// this should also change status
+						disabled={disableSubmit}
+						type="submit"
+						className="button is-link is-fullwidth"
 					>
-						<Form
-							ref={ref => {
-								this.registerForm = ref;
-							}}
-							type={Register}
-							options={RegisterFormOptions}
-							value={this.state.formValues}
-							onChange={this.onFormChange}
-						/>
-						<button
-							// NBED if sending request true,
-							// this should also change status
-							disabled={disableSubmit}
-							type="submit"
-							className="btn btn-default btn-block"
-						>
-							Submit
-						</button>
-					</form>
-				</div>
+						Submit
+					</button>
+				</form>
 			</div>
 		);
 	}

@@ -28,7 +28,7 @@ class HomeView extends React.Component {
 
     render() {
         return (
-            <div className="container">
+            <div className="has-text-centered">
                 <div className="margin-top-medium text-center">
                     <img
                         className="page-logo margin-bottom-medium"

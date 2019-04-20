@@ -8,11 +8,11 @@ import { connect } from "react-redux";
 
 // Components
 import StatusBlock from "components/StatusBlock/StatusBlock";
+import { Title } from "bloomer";
 
 // Helpers
 import t from "tcomb-form";
 import templates from "tcomb-form-templates-bulma";
-t.form.Form.templates = templates;
 
 // Local imports
 import { loginRequest } from "services/auth/authActions";
@@ -20,6 +20,7 @@ import { extractRedirectOrDefault } from "utils/utils";
 
 // Create a form
 const Form = t.form.Form;
+t.form.Form.templates = templates;
 
 const Login = t.struct({
     email: t.String,
@@ -28,10 +29,13 @@ const Login = t.struct({
 
 const LoginFormOptions = {
     auto: "placeholders",
-    help: <i>Hint: a@a.com / qw</i>,
     fields: {
         password: {
-            type: "password"
+            type: "password",
+            error: "This is required."
+        },
+        email: {
+            error: "This is required."
         }
     }
 };
@@ -113,34 +117,34 @@ class LoginView extends React.Component {
         }
 
         return (
-            <div className="container login">
-                <h1 className="text-center">Login</h1>
-                <div className="login-container margin-top-medium">
-                    <StatusBlock statusTextMessages={this.props.statusText} />
-                    <form onSubmit={this.onFormSubmit}>
-                        <Form
-                            // ref, options and type are
-                            // all specific to tcomb forms??
-                            //
-                            // loginForm here is the name
-                            // where we're saving the form
-                            ref={ref => {
-                                this.loginForm = ref;
-                            }}
-                            type={Login}
-                            options={LoginFormOptions}
-                            value={this.state.formValues}
-                            onChange={this.onFormChange}
-                        />
-                        <button
-                            disabled={disableSubmit}
-                            type="submit"
-                            className="btn btn-default btn-block"
-                        >
-                            Submit
-                        </button>
-                    </form>
-                </div>
+            <div>
+                <Title tag="h1" isSize={3}>
+                    Login
+                </Title>
+                <StatusBlock statusTextMessages={this.props.statusText} />
+                <form onSubmit={this.onFormSubmit}>
+                    <Form
+                        // ref, options and type are
+                        // all specific to tcomb forms??
+                        //
+                        // loginForm here is the name
+                        // where we're saving the form
+                        ref={ref => {
+                            this.loginForm = ref;
+                        }}
+                        type={Login}
+                        options={LoginFormOptions}
+                        value={this.state.formValues}
+                        onChange={this.onFormChange}
+                    />
+                    <button
+                        disabled={disableSubmit}
+                        type="submit"
+                        className="button is-link is-fullwidth"
+                    >
+                        Submit
+                    </button>
+                </form>
             </div>
         );
     }
