@@ -27,8 +27,6 @@ class HomeView extends React.Component {
     };
 
     render() {
-        console.log(this.props);
-        console.log(this.props.statusText);
         return (
             <div className="container">
                 <div className="margin-top-medium text-center">

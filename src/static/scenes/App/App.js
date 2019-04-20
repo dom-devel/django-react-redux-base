@@ -6,7 +6,6 @@ import "styles/main.scss";
 
 // Import local components
 import { NavBar } from "components/Navbar/Navbar";
-import { ConnAuthBarrier } from "components/AuthBarrier";
 
 class App extends React.Component {
     static propTypes = {
@@ -19,13 +18,9 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>
-                <div className="app">
-                    <NavBar />
-                    <ConnAuthBarrier>
-                        <div>{this.props.children}</div>
-                    </ConnAuthBarrier>
-                </div>
+            <div className="app">
+                <NavBar />
+                <div>{this.props.children}</div>
             </div>
         );
     }

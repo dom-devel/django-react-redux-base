@@ -2,9 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-// Local imports
-import { connEnsureAuth } from "components/AuthBarrier";
-
 const RestrictedPage = () => {
 	return (
 		<div>

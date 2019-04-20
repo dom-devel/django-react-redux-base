@@ -45,9 +45,6 @@ export function* loginFlow() {
 			// Send new URL to react router
 			yield put(push(redirectTo)); // Go to Home page
 		}
-		// 	else if (winner.logout) {
-		// 	// console.log("sdsd");
-		// }
 	}
 }
 
@@ -205,9 +202,6 @@ export function* authorize({
 		// The only way to tell if axios has found network errors is as follows
 		// https://github.com/axios/axios/issues/383
 		let error_data;
-		console.log(error);
-		console.log(typeof error);
-		// console.log(typeof error);
 		if (!error.status) {
 			// network error
 			error_data = { Errors: "Network failure" };
