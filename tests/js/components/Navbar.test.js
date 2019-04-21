@@ -67,7 +67,7 @@ test("Check that home link exists -- connected to redux", async () => {
 	);
 
 	// Act
-	await waitForElement(() => getByText(/Home/i));
+	await waitForElement(() => getByText(/Login/i));
 });
 
 /**
@@ -88,5 +88,5 @@ test("Check that home link exists -- not connected to redux", async () => {
 	const { getByText } = render(<NavBarNotConnected {...fakeProps} />);
 
 	// Act
-	await waitForElement(() => getByText(/Home/i));
+	await waitForElement(() => getByText(/Login/i));
 });

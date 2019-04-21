@@ -15,6 +15,8 @@ import {
 // To save on space here we
 import auth from "services/auth/auth";
 import * as urls from "routesConstants";
+import testPrivateRouteHOC from "services/auth/authRouteHelpers";
+
 // https://tylermcginnis.com/react-router-protected-routes-authentication/
 const PrivateRoute = ({ component: Component, ...rest }) => (
 	<Route
@@ -29,10 +31,26 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 	/>
 );
 
-PrivateRoute.propTypes = {
-	component: PropTypes.node.isRequired
-};
+// function privateRouteHOC(WrappedComponent) {
+// 	// ...and returns another component...
+// 	return class extends React.Component {
+// 		render() {
+// 			return auth.loggedIn === true ? (
+// 				<WrappedComponent />
+// 			) : (
+// 				<Redirect to={urls.AUTH_LOGIN} />
+// 			);
+// 		}
+// 	};
+// }
 
+// PrivateRoute.propTypes = {
+// 	component: PropTypes.func.isRequired
+// };
+
+/*
+ * Layout information from: https://simonsmith.io/reusing-layouts-in-react-router-4
+ */
 export default (
 	<Switch>
 		<Route exact path="/" component={HomeView} />
@@ -48,9 +66,9 @@ export default (
 		{/*
 			Other pages
 		*/}
-		<PrivateRoute
+		<Route
 			path={urls.EXAMPLE_RESTRICTED}
-			component={RestrictedView}
+			component={testPrivateRouteHOC(RestrictedView)}
 		/>
 		<Route path="*" component={NotFoundView} />
 	</Switch>

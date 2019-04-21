@@ -1,20 +1,22 @@
+// React imports
 import React from "react";
-// import { withRouter } from "react-router";
 import { Provider } from "react-redux";
-// import { Link, Route, Router, Switch } from "react-router-dom";
 import { ConnectedRouter } from "connected-react-router";
 import { createMemoryHistory } from "history";
+
+// Testing helpers
 import {
-  render,
-  // fireEvent,
-  cleanup,
-  waitForElement
+    render,
+    // fireEvent,
+    cleanup,
+    waitForElement
 } from "react-testing-library";
 
-// import history from "utils/history";
+// Local imports
 import configureStore from "store/configureStore";
-
 import Root from "scenes/Root/Root";
+import auth from "services/auth/auth";
+import * as urls from "routesConstants";
 
 // Ok, so here's what your tests might look like
 afterEach(cleanup);
@@ -46,13 +48,13 @@ afterEach(cleanup);
 // }
 
 function prepareConnectedComponents(route) {
-  const history = createMemoryHistory({ initialEntries: [route] });
-  const initialState = {};
-  const store = configureStore(initialState, history);
-  return {
-    store,
-    history
-  };
+    const history = createMemoryHistory({ initialEntries: [route] });
+    const initialState = {};
+    const store = configureStore(initialState, history);
+    return {
+        store,
+        history
+    };
 }
 
 // test("full app rendering/navigating", () => {
@@ -73,12 +75,50 @@ function prepareConnectedComponents(route) {
 //   expect(container.innerHTML).toMatch("No match");
 // });
 
-test("rendering a scene that uses withRouter", async () => {
-  const setup = prepareConnectedComponents("/login/");
+test("Check that login page that can be reached", async () => {
+    // Setup full test
+    const setup = prepareConnectedComponents(urls.AUTH_LOGIN);
+    const { getByTestId } = render(
+        <Root store={setup.store} history={setup.history} />
+    );
 
-  const { getByText } = render(
-    <Root store={setup.store} history={setup.history} />
-  );
-  // expect(getByTestId("location-display").textContent).toBe(route);
-  await waitForElement(() => getByText(/login/i));
+    await waitForElement(() => getByTestId(/loginForm/i));
+});
+
+test("Check that restricted page can't be reached on for unauthed user.", async () => {
+    const authLoggedInMock = jest
+        .spyOn(auth, "loggedIn")
+        .mockImplementation(() => {
+            return false;
+        });
+
+    // Setup full test
+    const setup = prepareConnectedComponents(urls.EXAMPLE_RESTRICTED);
+    const { getByTestId } = render(
+        <Root store={setup.store} history={setup.history} />
+    );
+
+    await waitForElement(() => getByTestId(/loginForm/i));
+
+    // Reset jest mock
+    authLoggedInMock.mockRestore();
+});
+
+test("Check that restricted page can't be reached on for unauthed user.", async () => {
+    const authLoggedInMock = jest
+        .spyOn(auth, "loggedIn")
+        .mockImplementation(() => {
+            return true;
+        });
+
+    // Setup full test
+    const setup = prepareConnectedComponents(urls.EXAMPLE_RESTRICTED);
+    const { getByTestId } = render(
+        <Root store={setup.store} history={setup.history} />
+    );
+
+    await waitForElement(() => getByTestId(/loginForm/i));
+
+    // Reset jest mock
+    authLoggedInMock.mockRestore();
 });

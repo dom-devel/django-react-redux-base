@@ -43,7 +43,6 @@ const LoginFormOptions = {
 class LoginView extends React.Component {
     static propTypes = {
         // From mapState
-        dispatch: PropTypes.func.isRequired,
         loggedIn: PropTypes.bool.isRequired,
         sendingRequest: PropTypes.bool.isRequired,
         statusText: PropTypes.array,
@@ -122,7 +121,7 @@ class LoginView extends React.Component {
                     Login
                 </Title>
                 <StatusBlock statusTextMessages={this.props.statusText} />
-                <form onSubmit={this.onFormSubmit}>
+                <form onSubmit={this.onFormSubmit} data-testid="loginForm">
                     <Form
                         // ref, options and type are
                         // all specific to tcomb forms??

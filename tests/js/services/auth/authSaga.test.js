@@ -213,8 +213,6 @@ describe("test logout saga", () => {
 
 		// Wait for logout
 		await sagaTester.waitFor("SET_MESSAGE");
-		console.log(sagaTester.getCalledActions());
-		// await sagaTester.waitFor(REQUEST_ERROR);
 
 		// Check if saga has set user to logged out
 		expect(sagaTester.getCalledActions()).toContainEqual(
