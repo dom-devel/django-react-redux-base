@@ -6,7 +6,8 @@ import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
 
 import authReducer from "services/auth/authReducer";
-import messageReducer from "services/message/messageReducer";
+import messageReducer from "services/generalStatus/generalStatusReducer";
+import userReducer from "services/user/userReducer";
 import history from "utils/history";
 
 /**
@@ -17,7 +18,8 @@ export default function createReducer(injectedReducers = {}) {
 		// Had to manually set this. Doing the clever combine
 		// below meant it was failing to set
 		auth: authReducer,
-		message: messageReducer,
+		generalStatus: messageReducer,
+		user: userReducer,
 
 		router: connectRouter(history),
 		...injectedReducers
@@ -27,3 +29,4 @@ export default function createReducer(injectedReducers = {}) {
 	// const mergeWithRouterState = connectRouter(history);
 	return rootReducer;
 }
+

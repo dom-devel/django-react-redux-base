@@ -15,76 +15,77 @@ import t from "tcomb-form";
 import templates from "tcomb-form-templates-bulma";
 
 // Local imports
-import { loginRequest } from "services/auth/authActions";
-import { extractRedirectOrDefault } from "utils/utils";
+import { dataRequest } from "services/data/dataActions";
+import { currentUser } from "services/user/userActions";
+import { USER_RTE_UPD_API } from "routesConstants";
 
 // Create a form
 const Form = t.form.Form;
 t.form.Form.templates = templates;
 
-const Login = t.struct({
+const Account = t.struct({
     email: t.String,
-    password: t.String
+    name: t.String
 });
 
-const LoginFormOptions = {
-    auto: "placeholders",
-    fields: {
-        password: {
-            type: "password",
-            error: "Password is required."
-        },
-        email: {
-            error: "Email is required."
-        }
-    }
+const AccountFormOptions = {
+    auto: "placeholders"
+    // fields: {
+    //     password: {
+    //         type: "password",
+    //         error: "Password is required."
+    //     },
+    //     email: {
+    //         error: "Email is required."
+    //     }
+    // }
 };
 
-class LoginView extends React.Component {
+class AccountView extends React.Component {
     static propTypes = {
         // From mapState
-        loggedIn: PropTypes.bool.isRequired,
         sendingRequest: PropTypes.bool.isRequired,
         statusText: PropTypes.array,
         // From mapDispatch
         actions: PropTypes.shape({
-            loginRequest: PropTypes.func.isRequired
+            dataRequest: PropTypes.func.isRequired
         }).isRequired,
-        // From redux connect
-        location: PropTypes.shape({
-            // The login redirect to location
-            search: PropTypes.string
-        })
+        name: PropTypes.string,
+        email: PropTypes.string
     };
 
     // ES6 syntax for setting default props on component
     static defaultProps = {
         statusText: [],
-        location: { search: "/" }
+        name: "",
+        email: ""
     };
 
     constructor(props) {
         super(props);
 
-        const redirectRoute = extractRedirectOrDefault(
-            this.props.location.search
-        );
-
-        // We store the form values and the redirect location post
-        // login in the state
         this.state = {
             formValues: {
-                email: "",
-                password: ""
-            },
-            redirectTo: redirectRoute
+                name: this.props.name,
+                email: this.props.email
+            }
         };
+    }
+
+    componentDidMount() {
+        this.props.actions.dataRequest({
+            serviceType: "generalStatus",
+            url: USER_RTE_UPD_API,
+            requestType: "get",
+            payload: {},
+            output: currentUser
+        });
     }
 
     // Store form values dyanmically in the state
     onFormChange = (value, path) => {
         // Validation component
-        this.loginForm.getComponent(path).validate();
+        this.accountForm.getComponent(path).validate();
 
         // Set the value of the form in state.
         this.setState({ formValues: value });
@@ -94,15 +95,15 @@ class LoginView extends React.Component {
         e.preventDefault();
         // This is tcomb fun that gets the values from
         // the form
-        const value = this.loginForm.getValue();
+        const value = this.accountForm.getValue();
         if (value) {
             // Pass through as object for easier
             // unpacking later
-            this.props.actions.loginRequest({
-                email: value.email,
-                password: value.password,
-                redirectTo: this.state.redirectTo
-            });
+            // this.props.actions.dataRequest({
+            //     email: value.email,
+            //     password: value.password,
+            //     redirectTo: this.state.redirectTo
+            // });
         }
     };
 
@@ -112,17 +113,17 @@ class LoginView extends React.Component {
     render() {
         // Check if user is logged-in or sending request
         let disableSubmit = false;
-        if (this.props.loggedIn || this.props.sendingRequest) {
+        if (this.props.sendingRequest) {
             disableSubmit = true;
         }
 
         return (
             <div>
                 <Title tag="h1" isSize={3}>
-                    Login
+                    User Account
                 </Title>
                 <StatusBlock statusTextMessages={this.props.statusText} />
-                <form onSubmit={this.onFormSubmit} data-testid="loginForm">
+                <form onSubmit={this.onFormSubmit} data-testid="accountForm">
                     <Form
                         // ref, options and type are
                         // all specific to tcomb forms??
@@ -130,10 +131,10 @@ class LoginView extends React.Component {
                         // loginForm here is the name
                         // where we're saving the form
                         ref={ref => {
-                            this.loginForm = ref;
+                            this.accountForm = ref;
                         }}
-                        type={Login}
-                        options={LoginFormOptions}
+                        type={Account}
+                        options={AccountFormOptions}
                         value={this.state.formValues}
                         onChange={this.onFormChange}
                     />
@@ -152,9 +153,9 @@ class LoginView extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        loggedIn: state.auth.loggedIn,
-        sendingRequest: state.auth.sendingRequest,
-        statusText: state.generalStatus.statusText
+        loggedIn: state.generalStatus.sendingRequest,
+        name: state.user.name,
+        email: state.user.email
     };
 };
 
@@ -167,14 +168,14 @@ const mapDispatchToProps = dispatch => {
         // a dispatch call. This means we can now call them
         // directly and they will dispatch an action to the
         // store where it can be intercepted by saga.
-        actions: bindActionCreators({ loginRequest }, dispatch)
+        actions: bindActionCreators({ dataRequest }, dispatch)
     };
 };
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(LoginView);
+)(AccountView);
 // Export non connected view for unit testing without redux
 // store connection.
-export { LoginView as LoginViewNotConnected };
+export { AccountView as AccountViewNotConnected };

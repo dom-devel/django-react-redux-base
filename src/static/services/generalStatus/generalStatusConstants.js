@@ -5,3 +5,5 @@
 
 export const SET_MESSAGE = "SET_MESSAGE";
 export const CLEAR_MESSAGE = "CLEAR_MESSAGE";
+export const SENDING_REQUEST = "SENDING_REQUEST";
+export const REQUEST_ERROR = "REQUEST_ERROR";

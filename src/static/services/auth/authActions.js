@@ -59,8 +59,7 @@ export function logoutRequest() {
  * @param  {object} data          	The data we're sending for registration
  * @param  {string} data.email 	  	The email of the user to register
  * @param  {string} data.password 	The password of the user to register
- * @param  {string} data.first_name The first name of the user to register
- * @param  {string} data.last_name 	The last name of the user to register
+ * @param  {string} data.name       The name of the user to register
  * @param  {string} data.redirectTo The location to redirect after submitting the form
  */
 export function registerRequest(data) {
@@ -72,6 +71,6 @@ export function registerRequest(data) {
  * @param  {object} statusText The error we got when trying to make the request
  */
 export function requestError() {
-	console.log("ahah");
+	// console.log("ahah");
 	return { type: REQUEST_ERROR };
 }

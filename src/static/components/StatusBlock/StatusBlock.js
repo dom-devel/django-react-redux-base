@@ -24,15 +24,15 @@ import { isEmptyObject } from "utils/utils";
 const StatusBlock = ({ statusTextMessages }) => {
 	// Easy way to check for specific errors rather than
 	// looping through multiple arrays
-
-	console.log(statusTextMessages);
-
 	let messageDiv = <div />;
 	if (statusTextMessages.length !== 0) {
 		messageDiv = (
 			<div className="m-b-m">
-				{statusTextMessages.map((item, index) => (
-					<div className={getBootstrapErrorClass(item.statusLevel)}>
+				{statusTextMessages.map((item, i) => (
+					<div
+						key={i} // eslint-disable-line
+						className={getBootstrapErrorClass(item.statusLevel)}
+					>
 						<StatusMessages statusTextObject={item.message} />
 					</div>
 				))}

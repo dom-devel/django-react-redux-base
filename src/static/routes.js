@@ -9,6 +9,7 @@ import {
 	RestrictedView,
 	PasswordResetView,
 	NotFoundView,
+	AccountView,
 	FormMed,
 	FormSmall
 } from "scenes";
@@ -68,7 +69,11 @@ export default (
 		*/}
 		<Route
 			path={urls.EXAMPLE_RESTRICTED}
-			component={testPrivateRouteHOC(RestrictedView)}
+			component={testPrivateRouteHOC(RestrictedView, true)}
+		/>
+		<Route
+			path={urls.ACCOUNT}
+			component={testPrivateRouteHOC(AccountView, true)}
 		/>
 		<Route path="*" component={NotFoundView} />
 	</Switch>

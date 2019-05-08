@@ -65,7 +65,17 @@ class NavBar extends React.Component {
 				</NavbarStart>
 				<NavbarEnd>
 					{this.props.loggedIn ? (
-						<NavbarItem onClick={this.logout}>Logout</NavbarItem>
+						<span className="jsx-wrapper-stack-and-space">
+							<NavbarItem
+								href={urls.ACCOUNT}
+								onClick={() => this.logout()}
+							>
+								Account
+							</NavbarItem>
+							<NavbarItem href="#" onClick={() => this.logout()}>
+								Logout
+							</NavbarItem>
+						</span>
 					) : (
 						// We can't have two direct children, so we have to
 						// wrap in an element

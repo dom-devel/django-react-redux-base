@@ -9,7 +9,7 @@ import createReducer from "store/reducer";
 
 // Local imports
 // import authReducer from "services/auth/authReducer";
-import authSaga from "services/auth/authSaga";
+import allSaga from "services/allSaga";
 // import dataReducer from "services/data/reducer";
 
 // console.log(authSaga);
@@ -41,7 +41,7 @@ export default function configureStore(initialState = {}, history) {
 		composeEnhancers(...enhancers)
 	);
 	// Extensions
-	store.runSaga = sagaMiddleware.run(authSaga);
+	store.runSaga = sagaMiddleware.run(allSaga);
 
 	// NBED: Dynamically injecting the reducers and sagas
 	// in order to make them hot reloadable, was failing

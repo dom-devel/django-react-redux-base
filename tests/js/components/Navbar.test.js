@@ -2,12 +2,7 @@ import React from "react";
 import { Provider } from "react-redux";
 
 // Import react testing library helpers
-import {
-	render,
-	// fireEvent,
-	cleanup,
-	waitForElement
-} from "react-testing-library";
+import { render, cleanup, waitForElement } from "react-testing-library";
 
 // Import the navbar component
 import { NavBar, NavBarNotConnected } from "components/Navbar/Navbar";

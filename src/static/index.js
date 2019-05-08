@@ -7,7 +7,7 @@ import Root from "scenes/Root/Root";
 import configureStore from "store/configureStore";
 
 // Local imports
-import { clearMessages } from "services/message/messageActions";
+import { clearMessages } from "services/generalStatus/generalStatusActions";
 
 // Store begins empty
 const initialState = {};

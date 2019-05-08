@@ -10,12 +10,11 @@ import { take, call, put, fork, race } from "redux-saga/effects";
 
 // Local imports
 import auth from "services/auth/auth";
-import catchInvalidToken from "utils/saga";
 
 // Use non-standard imports
 import * as authConstants from "services/auth/authConstants";
 import * as authActions from "services/auth/authActions";
-import * as messageActions from "services/message/messageActions";
+import * as generalStatusActions from "services/generalStatus/generalStatusActions";
 
 /**
  * Log in saga
@@ -31,6 +30,7 @@ export function* loginFlow() {
 		// A `LOGOUT` action may happen while the `authorize` effect is going on, which may
 		// lead to a race condition. This is unlikely, but just in case, we call `race` which
 		// returns the "winner", i.e. the one that finished first
+
 		const winner = yield race({
 			auth: call(authorize, { email, password, isRegistering: false }),
 			logout: take(authConstants.LOGOUT)
@@ -57,16 +57,14 @@ export function* registerFlow() {
 		// We always listen to `REGISTER_REQUEST` actions
 		const request = yield take(authConstants.REGISTER_REQUEST);
 
-		const { firstName, lastName, email, password } = request.data;
-
+		const { name, email, password } = request.data;
 		// We call the `authorize` task with the data, telling it that we are registering a user
 		// This returns `true` if the registering was successful, `false` if not
 		const wasSuccessful = yield call(authorize, {
 			email,
 			password,
 			isRegistering: true,
-			firstName,
-			lastName
+			name
 		});
 
 		// If we could register a user, we send the appropriate actions
@@ -103,7 +101,7 @@ export function* logoutFlow() {
 			} else {
 				yield put(authActions.requestError());
 				yield put(
-					messageActions.setMessage({
+					generalStatusActions.setMessage({
 						message: error.response.data,
 						statusLevel: "error"
 					})
@@ -149,7 +147,7 @@ function* isTokenInvalid(response) {
 function* redirectToHomeWithMessage() {
 	yield put(push("/"));
 	yield put(
-		messageActions.setMessage({
+		generalStatusActions.setMessage({
 			message: {
 				non_field_errors: [
 					"Your login has expired. Please sign back in."
@@ -167,13 +165,7 @@ function* redirectToHomeWithMessage() {
  * @param  {object} options                Options
  * @param  {boolean} options.isRegistering Is this a register request?
  */
-export function* authorize({
-	email,
-	password,
-	isRegistering,
-	firstName,
-	lastName
-}) {
+export function* authorize({ email, password, isRegistering, name }) {
 	// We send an action that tells Redux we're sending a request
 	yield put(authActions.sendingRequest(true));
 
@@ -186,35 +178,36 @@ export function* authorize({
 		// as if it's synchronous because we pause execution until the call is done
 		// with `yield`!
 		if (isRegistering) {
-			response = yield call(
-				auth.register,
-				email,
-				password,
-				firstName,
-				lastName
-			);
+			response = yield call(auth.register, email, password, name);
 		} else {
 			response = yield call(auth.login, email, password);
 		}
 
 		return response;
 	} catch (error) {
+		// console.log(error);
+		// console.log(error.status);
+		// console.log(error.response);
 		// The only way to tell if axios has found network errors is as follows
 		// https://github.com/axios/axios/issues/383
-		let error_data;
-		if (!error.status) {
+		let errorData;
+		if (!error.response) {
 			// network error
-			error_data = { Errors: "Network failure" };
+			errorData = {
+				non_field_errors: [
+					"There are problems with our server. Please try again later."
+				]
+			};
 		} else {
-			error_data = error.response.data;
+			errorData = error.response.data;
 		}
 
 		// If we get an error we send Redux the appropriate action and return
 		yield put(authActions.requestError());
 
 		yield put(
-			messageActions.setMessage({
-				message: error.response.data,
+			generalStatusActions.setMessage({
+				message: errorData,
 				statusLevel: "error"
 			})
 		);
@@ -224,14 +217,4 @@ export function* authorize({
 		// When done, we tell Redux we're not in the middle of a request any more
 		yield put(authActions.sendingRequest(false));
 	}
-}
-
-// The root saga is what we actually send to Redux's middleware. In here we fork
-// each saga so that they are all "active" and listening.
-// Sagas are fired once at the start of an app and can be thought of as processes running
-// in the background, watching actions dispatched to the store.
-export default function* root() {
-	yield fork(loginFlow);
-	yield fork(logoutFlow);
-	yield fork(registerFlow);
 }

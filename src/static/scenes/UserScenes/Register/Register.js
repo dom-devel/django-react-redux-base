@@ -57,7 +57,7 @@ class RegisterView extends Component {
 	static propTypes = {
 		// From mapState
 		sendingRequest: PropTypes.bool.isRequired,
-		statusText: PropTypes.shape([]),
+		statusText: PropTypes.array,
 		loggedIn: PropTypes.bool.isRequired,
 		// From mapDispatch
 		actions: PropTypes.shape({
@@ -178,7 +178,7 @@ const mapStateToProps = state => {
 	return {
 		loggedIn: state.auth.loggedIn,
 		sendingRequest: state.auth.sendingRequest,
-		statusText: state.message.statusText
+		statusText: state.generalStatus.statusText
 	};
 };
 

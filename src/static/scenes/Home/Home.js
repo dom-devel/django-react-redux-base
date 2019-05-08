@@ -65,7 +65,7 @@ class HomeView extends React.Component {
 const mapStateToProps = state => {
     return {
         userName: state.auth.userName,
-        statusText: state.message.statusText
+        statusText: state.generalStatus.statusText
     };
 };
 

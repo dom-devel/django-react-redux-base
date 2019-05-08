@@ -69,11 +69,10 @@ describe("test login saga", () => {
 		// Wait for the logged in action
 		await sagaTester.waitFor(IS_USER_LOGGED_IN);
 
-		// console.log(sagaTester.getLatestCalledAction());
-		// console.log(sagaTester.getCalledActions());
+		authSagaRewire.__ResetDependency__("authorize");
 	});
 
-	test("Hitting logout after submitting login, should log you out", () => {
+	test("Hitting logout after submitting login, should log you out", async () => {
 		// Use rewire to allow mocking of single function
 		authSagaRewire.__Rewire__(
 			"authorize",
@@ -95,7 +94,9 @@ describe("test login saga", () => {
 		sagaTester.dispatch(logoutRequest());
 
 		// Wait for the logged in action
-		sagaTester.waitFor(LOGOUT);
+		await sagaTester.waitFor(LOGOUT);
+
+		authSagaRewire.__ResetDependency__("authorize");
 	});
 
 	test("Check login fails on server error", () => {
@@ -115,7 +116,7 @@ describe("test login saga", () => {
 		sagaTester.waitFor(REQUEST_ERROR);
 	});
 
-	test("Check login fails on failed authorisation", () => {
+	test("Check login fails on failed authorisation", async () => {
 		// Mock axios so it returns a server error on login call
 		mockAxios.onPost().reply(403);
 
@@ -129,7 +130,81 @@ describe("test login saga", () => {
 		);
 
 		// Wait for the logged in action
-		sagaTester.waitFor(REQUEST_ERROR);
+		await sagaTester.waitFor(REQUEST_ERROR);
+	});
+
+	test("If there is a network error, we should return a custom network error message", async () => {
+		mockAxios.onPost().networkError();
+
+		// Our test (Actions is our standard redux action component).
+		// Start the saga with the START action
+		sagaTester.dispatch(
+			loginRequest({
+				email: "test@example.com",
+				password: "123",
+				redirectTo: "/"
+			})
+		);
+
+		// Wait for error then check value
+		await sagaTester.waitFor(REQUEST_ERROR);
+
+		// Check if saga contains field with server error
+		expect(sagaTester.getCalledActions()).toContainEqual(
+			expect.objectContaining({
+				type: REQUEST_ERROR
+			})
+		);
+
+		// Check it also contains set message
+		expect(sagaTester.getCalledActions()).toContainEqual(
+			expect.objectContaining({
+				type: "SET_MESSAGE",
+				statusText: {
+					message: {
+						non_field_errors: [
+							"There are problems with our server. Please try again later."
+						]
+					},
+					statusLevel: "error"
+				}
+			})
+		);
+	});
+
+	// NBED -- This could be improved by checking value of store after
+	test("Check error message is sent with correct value", async () => {
+		// Mock axios so it returns a server error on login call
+		mockAxios.onPost().reply(403, {
+			non_field_errors: ["Unable to log in with provided credentials."]
+		});
+
+		// Our test (Actions is our standard redux action component). Start the saga with the START action
+		sagaTester.dispatch(
+			loginRequest({
+				email: "test@example.com",
+				password: "123",
+				redirectTo: "/"
+			})
+		);
+
+		// Wait for the logged in action
+		await sagaTester.waitFor(REQUEST_ERROR);
+
+		// Check it also contains set message
+		expect(sagaTester.getCalledActions()).toContainEqual(
+			expect.objectContaining({
+				type: "SET_MESSAGE",
+				statusText: {
+					message: {
+						non_field_errors: [
+							"Unable to log in with provided credentials."
+						]
+					},
+					statusLevel: "error"
+				}
+			})
+		);
 	});
 });
 
@@ -275,3 +350,45 @@ describe("test logout saga", () => {
 		authLoggedInMock.mockRestore();
 	});
 });
+
+// describe("test register saga", () => {
+// 	let sagaTester = null;
+// 	let mockAxios;
+
+// 	beforeEach(() => {
+// 		// Set-up saga testing helpers
+// 		sagaTester = new SagaTester({ initialState });
+// 		sagaTester.start(loginFlow);
+
+// 		// Set-up axios mocks
+// 		mockAxios = new MockAdapter(axios);
+// 		localStorage.clear();
+// 	});
+
+// 	afterEach(() => {
+// 		// We need to clear mocks to prevent
+// 		// us from staying logged in
+// 		mockAxios.restore();
+// 	});
+
+// 	test("Check successful login on successful auth", async () => {
+// 		// Use rewire to allow mocking of single function
+// 		authSagaRewire.__Rewire__("authorize", function* mock() {
+// 			return true;
+// 		});
+
+// 		// Our test (Actions is our standard redux action component). Start the saga with the START action
+// 		sagaTester.dispatch(
+// 			loginRequest({
+// 				email: "test@example.com",
+// 				password: "123",
+// 				redirectTo: "/"
+// 			})
+// 		);
+
+// 		// Wait for the logged in action
+// 		await sagaTester.waitFor(IS_USER_LOGGED_IN);
+
+// 		authSagaRewire.__ResetDependency__("authorize");
+// 	});
+// });

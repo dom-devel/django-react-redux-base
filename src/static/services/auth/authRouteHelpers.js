@@ -26,13 +26,18 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { push } from "connected-react-router";
 
-export default function privateRouteHOC(ComposedComponent) {
+// https://www.codementor.io/sahilmittal/using-higher-order-components-for-authenticated-routing-i1hcp6pc6
+export default function userAuthRouteHOC(
+	ComposedComponent,
+	userMustBeLoggedIn
+) {
 	class Authenticate extends React.Component {
 		static propTypes = {
 			loggedIn: PropTypes.bool.isRequired,
-			redirect: PropTypes.func.isRequired,
+			// redirect: PropTypes.func.isRequired,
+			// Adding required in here causes isuses.
 			actions: PropTypes.shape({
-				redirect: PropTypes.func.isRequired
+				redirect: PropTypes.func
 			}).isRequired
 		};
 
@@ -40,23 +45,18 @@ export default function privateRouteHOC(ComposedComponent) {
 			this.checkAndRedirect();
 		}
 
-		componentDidUpdate() {
-			this.checkAndRedirect();
-		}
-
 		checkAndRedirect() {
 			const { loggedIn } = this.props;
 
-			if (!loggedIn) {
+			if (userMustBeLoggedIn !== loggedIn) {
 				this.props.actions.redirect();
 			}
 		}
 
 		render() {
-			console.log(this.props);
 			return (
 				<div>
-					{this.props.loggedIn ? (
+					{userMustBeLoggedIn === this.props.loggedIn ? (
 						<ComposedComponent {...this.props} />
 					) : null}
 				</div>

@@ -1,8 +1,13 @@
-import { SET_MESSAGE, CLEAR_MESSAGE } from "services/message/messageConstants";
+import {
+	SET_MESSAGE,
+	CLEAR_MESSAGE
+} from "services/generalStatus/generalStatusConstants";
 
 // The initial application state
 const initialState = {
-	statusText: []
+	statusText: [],
+	sendingRequest: false,
+	isLoading: true
 };
 
 // Takes care of changing the application state
@@ -14,11 +19,6 @@ function reducer(state = initialState, action) {
 				message: action.statusText.message,
 				statusLevel: action.statusText.statusLevel
 			});
-			// if (Array.isArray(action.statusText)) {
-			// 	newMessage = state.statusText.concat(action.statusText);
-			// } else {
-			// 	newMessage = state.statusText.push(action.statusText);
-			// }
 			return {
 				...state,
 				statusText: newMessage

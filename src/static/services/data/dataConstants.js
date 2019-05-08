@@ -1,0 +1,3 @@
+export const DATA_REQUEST = "DATA_REQUEST";
+export const SENDING_REQUEST = "SENDING_REQUEST";
+export const REQUEST_ERROR = "REQUEST_ERROR";

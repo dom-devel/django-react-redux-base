@@ -2,7 +2,7 @@ import uuid
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -70,18 +70,18 @@ class MyUserManager(BaseUserManager):
         )
 
 
-class User(AbstractBaseUser):
+class User(AbstractUser):
     """
     Model that represents an user.
 
-    To be active, the user must register and confirm his email.
+    Djoser requires any user that is created to have validated an email.
+
+    https://www.fomfus.com/articles/how-to-use-email-as-username-for-django-authentication-removing-the-username
     """
 
-    # we want primary key to be called id so need to ignore pytlint
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False
-    )  # pylint: disable=invalid-name
-
+    username = None
+    first_name = None
+    last_name = None
     name = models.CharField(_("Name"), max_length=50)
     email = models.EmailField(_("Email address"), unique=True)
 
@@ -94,9 +94,8 @@ class User(AbstractBaseUser):
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
     date_updated = models.DateTimeField(_("date updated"), auto_now=True)
 
-    activation_key = models.UUIDField(unique=True, default=uuid.uuid4)  # email
-
     USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["name"]
 
     objects = MyUserManager()
 
@@ -134,15 +133,3 @@ class User(AbstractBaseUser):
             self.date_joined + timedelta(days=settings.ACCOUNT_ACTIVATION_DAYS)
             < timezone.now()
         )
-
-    def confirm_email(self):
-        """
-        Confirm email.
-
-        :return: boolean
-        """
-        if not self.activation_expired() and not self.confirmed_email:
-            self.confirmed_email = True
-            self.save()
-            return True
-        return False
